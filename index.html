@@ -5,7 +5,7 @@
     <link rel="stylesheet" href="assets/style.css?t=a44c9e9d">
     <link rel="stylesheet" href="assets/docpress.css?t=52d3f23f">
     <link rel="stylesheet" href="assets/custom.css?t=62fec3b8">
-    <script src="assets/search.js?t=5c37b715"></script>
+    <script src="assets/search.js?t=2b7ea9dd"></script>
     <script src="assets/script.js?t=820b7ffa"></script>
     <title>Kesko HTTP Service Design</title>
     <meta name="viewport" content="width=device-width">
@@ -156,6 +156,32 @@ and use requests with this value in the <code>If-None-Match</code> header to det
 if the cache should be updated.</p>
 <p>You can also use different HTTP cache headers for specific use cases but consider
 <code>ETag</code> as the default pick.</p>
+<h3 id="use-json-ld-with-schema.org-vocabulary"><a class="header-anchor" href="#use-json-ld-with-schemaorg-vocabulary" aria-hidden="true">&#xB6;</a> Use JSON-LD with <a href="http://schema.org">schema.org</a> vocabulary</h3>
+<p>Use JSON-LD format with API responses. Link other entities by referencing to an IRI which is expected to return another <a href="http://schema.org">schema.org</a> entity.</p>
+<p><a href="http://Schema.org">Schema.org</a> aims to create and maintain open schemas for structured data in the web. Structured data means data that is accompanied by semantics through an ontology. In other words structured data contains information about the data types and hierarchical links and relationships to other entities. JSON-LD is a format specification that extends JSON with linking capabilities. Linked data enables for example rich results in Google search.</p>
+<p>Example of JSON-LD with <a href="http://schema.org">schema.org</a> vocabulary:</p>
+<pre><code class="lang-json"> {
+    &quot;<span class="hljs-attr">@context</span>&quot;: <span class="pl-s">&quot;http://schema.org&quot;</span>,
+    &quot;<span class="hljs-attr">@type</span>&quot;: <span class="pl-s">&quot;HardwareStore&quot;</span>,
+    &quot;<span class="hljs-attr">branchCode</span>&quot;: <span class="pl-s">&quot;PK035-K-rauta-Lielahti&quot;</span>,
+    &quot;<span class="hljs-attr">name</span>&quot;: <span class="pl-s">&quot;K-Rauta Lielahti&quot;</span>,
+    &quot;<span class="hljs-attr">telephone</span>&quot;: <span class="pl-s">&quot;010 538 0300&quot;</span>,
+    &quot;<span class="hljs-attr">email</span>&quot;: <span class="pl-s">&quot;lielahti@k-rauta.fi&quot;</span>,
+    &quot;<span class="hljs-attr">address</span>&quot;: {
+      &quot;<span class="hljs-attr">@type</span>&quot;: <span class="pl-s">&quot;PostalAddress&quot;</span>,
+      &quot;<span class="hljs-attr">streetAddress</span>&quot;: <span class="pl-s">&quot;Turvesuonkatu 10&quot;</span>,
+      &quot;<span class="hljs-attr">addressLocality</span>&quot;: <span class="pl-s">&quot;Tampere&quot;</span>,
+      &quot;<span class="hljs-attr">postalCode</span>&quot;: <span class="pl-s">&quot;33400&quot;</span>,
+      &quot;<span class="hljs-attr">addressCountry</span>&quot;: <span class="pl-s">&quot;FI&quot;</span>
+    },
+    &quot;<span class="hljs-attr">makesOffer</span>&quot;: <span class="pl-s">&quot;https://keskoapi.com/api/products/PK035-K-rauta-Lielahti&quot;</span>
+  }
+</code></pre>
+<p>Read more:</p>
+<ul>
+<li><a href="https://schema.org/">https://schema.org/</a></li>
+<li><a href="http://json-ld.org/">http://json-ld.org/</a></li>
+</ul>
 <h3 id="use-consistent-json-conventions"><a class="header-anchor" href="#use-consistent-json-conventions" aria-hidden="true">&#xB6;</a> Use consistent JSON conventions</h3>
 <p>Use camelcased attribute names, plural array keys and correct JSON types for data. You may use strings
 for money to make sure the API user acknowledges that using float values is dangerous.</p>
@@ -566,6 +592,8 @@ $ curl -is https://<span class="hljs-variable">$TOKEN</span>@service.com/users
                 <li class="menu-item -level-2"><a href="#provide-request-ids-for-introspection" class="link title link-provide-request-ids-for-introspection">Provide Request-Ids for Introspection</a>
                 </li>
                 <li class="menu-item -level-2"><a href="#support-http-cache-headers" class="link title link-support-http-cache-headers">Support HTTP cache headers</a>
+                </li>
+                <li class="menu-item -level-2"><a href="#use-json-ld-with-schema.org-vocabulary" class="link title link-use-json-ld-with-schema.org-vocabulary">Use JSON-LD with schema.org vocabulary</a>
                 </li>
                 <li class="menu-item -level-2"><a href="#use-consistent-json-conventions" class="link title link-use-consistent-json-conventions">Use consistent JSON conventions</a>
                 </li>
