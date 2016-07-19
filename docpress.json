@@ -1,0 +1,24 @@
+{
+  "github": "kesko-dev/http-service-design",
+  "css": [
+    "assets/docpress.css",
+    "assets/custom.css"
+  ],
+  "markdown": {
+    "typographer": true,
+    "plugins": {
+      "decorate": true,
+      "anchor": {
+        "permalink": true,
+        "permalinkBefore": true,
+        "level": 2
+      },
+      "alerts": {}
+    }
+  },
+  "plugins": {
+    "docpress-core": {},
+    "docpress-search": false,
+    "docpress-base": {}
+  }
+}
