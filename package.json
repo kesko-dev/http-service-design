@@ -1,0 +1,25 @@
+{
+  "name": "http-service-design",
+  "version": "1.0.0",
+  "description": "Common conventions for HTTP services in Kesko",
+  "main": "index.js",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/kesko-dev/http-service-design.git"
+  },
+  "author": "",
+  "license": "CC-BY-3.0",
+  "bugs": {
+    "url": "https://github.com/kesko-dev/http-service-design/issues"
+  },
+  "homepage": "https://github.com/kesko-dev/http-service-design#readme",
+  "devDependencies": {
+    "docpress": "0.6.12",
+    "git-update-ghpages": "1.3.0",
+    "markdown-it-alerts": "^0.1.0",
+    "markdown-it-anchor": "^2.5.0"
+  },
+  "scripts": {
+    "start": "docpress s"
+  }
+}

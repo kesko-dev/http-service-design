@@ -1,0 +1,157 @@
+/*
+  Derived from: https://github.com/docpress/docpress/blob/master/docs/assets/custom.css
+
+  Original license:
+  docpress © 2015+, Rico Sta. Cruz. Released under the MIT License.
+  Authored and maintained by Rico Sta. Cruz with help from contributors (list).
+*/
+
+/* For permalinks */
+
+.markdown-body h1, .markdown-body h2, .markdown-body h3, .markdown-body h4, .markdown-body h5, .markdown-body h6 {
+  position: relative;
+}
+
+.markdown-body h3, .markdown-body h4, .markdown-body h5, .markdown-body h6 {
+  margin-top: 2.5em;
+}
+
+.markdown-body h1 + h3, .markdown-body h1 + h4, .markdown-body h1 + h5, .markdown-body h1 + h6 {
+  margin-top: 0.5em;
+}
+
+.markdown-body h2 + h3, .markdown-body h2 + h4, .markdown-body h2 + h5, .markdown-body h2 + h6 {
+  margin-top: 0.5em;
+}
+
+.header-anchor {
+  position: absolute;
+  left: -0.8em;
+  visibility: hidden;
+  padding: 10px 20px;
+  margin-top: -10px;
+  margin-left: -20px;
+}
+
+.markdown-body h1:hover .header-anchor,
+.markdown-body h2:hover .header-anchor,
+.markdown-body h3:hover .header-anchor,
+.markdown-body h4:hover .header-anchor,
+.markdown-body h5:hover .header-anchor,
+.markdown-body h6:hover .header-anchor {
+  visibility: visible;
+}
+
+/* Hide search icon defined in docpress-base theme which isn't a working feature yet */
+.toc-menu:before {
+  visibility: hidden;
+  display: none;
+}
+
+.toc-menu .menu-item.-level-1 > .link.title {
+  font-weight: bold;
+}
+
+@media (min-width: 1280px) {
+  html .markdown-body .wide {
+    width: 900px;
+    margin-left: -100px;
+    margin-top: 2.7em;
+    margin-bottom: 2.7em;
+  }
+
+  html .markdown-body.markdown-body {
+    table, tr, td, th, thead, tbody {
+      border: 0;
+      background: transparent;
+    }
+
+    table {
+      border: solid 2px #eee;
+    }
+
+    th {
+      font-weight: normal;
+      font-size: 0.9em;
+      color: #888;
+    }
+
+    * + td,
+    * + th {
+      padding-left: 24px;
+    }
+
+    th, td {
+      text-align: left;
+      border-left: 0;
+      border-right: 0;
+      border-bottom: solid 1px #eee;
+      vertical-align: top;
+    }
+  }
+}
+
+/* Bootstrap alerts */
+
+
+/*
+http://cpratt.co/twitter-bootstrap-callout-css-styles/
+*/
+
+.alert {
+  padding: 10px 20px;
+  margin: 20px 0;
+  border: 1px solid #eee;
+  border-left-width: 5px;
+  border-radius: 3px;
+  color: @gray-light;
+}
+.alert h4 {
+  margin-top: 0;
+  margin-bottom: 5px;
+}
+.alert p:last-child {
+  margin-bottom: 0;
+}
+.alert code {
+  border-radius: 3px;
+}
+.alert+.alert {
+  margin-top: -5px;
+}
+.alert-default {
+  border-left-color: #777;
+}
+.alert-default h4 {
+  color: #777;
+}
+.alert-primary {
+  border-left-color: #428bca;
+}
+.alert-primary h4 {
+  color: #428bca;
+}
+.alert-success {
+  border-left-color: #5cb85c;
+}
+.alert-success h4 {
+  color: #5cb85c;
+}
+.alert-danger {
+  border-left-color: #d9534f;
+}
+.alert-danger h4 {
+  color: #d9534f;
+}
+.alert-warning {
+  border-left-color: #f0ad4e;
+}
+.alert-warning h4 {
+  color: #f0ad4e;
+}
+.alert-info {
+  border-left-color: #5bc0de;
+}
+.alert-info h4 {
+  color: #5bc0de;
+}
