@@ -1,5 +1,7 @@
 # Kesko HTTP Service Design
 
+[![Build Status](https://travis-ci.org/kesko-dev/http-service-design.svg?branch=master)](https://travis-ci.org/kesko-dev/http-service-design)
+
 *This documentation was forked
 from https://github.com/interagent/http-api-design and transformed to use
 [docpress](https://github.com/docpress/docpress) instead of [GitBook](https://www.gitbook.com/)
