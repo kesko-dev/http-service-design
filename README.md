@@ -184,7 +184,7 @@ You can also use different HTTP cache headers for specific use cases but conside
 
 ### Use JSON-LD with schema.org vocabulary
 
-Use JSON-LD format with API responses. Link other entities by referencing to an IRI which is expected to return another schema.org entity.
+Use JSON-LD format with API response data. Link other entities by referencing to an IRI which is expected to return another schema.org entity.
 
 Schema.org aims to create and maintain open schemas for structured data in the web. Structured data means data that is accompanied by semantics through an ontology. In other words structured data contains information about the data types and hierarchical links and relationships to other entities. JSON-LD is a format specification that extends JSON with linking capabilities. Linked data enables for example rich results in Google search.
 
@@ -205,7 +205,11 @@ Example of JSON-LD with schema.org vocabulary:
       "postalCode": "33400",
       "addressCountry": "FI"
     },
-    "makesOffer": "https://keskoapi.com/api/products/PK035-K-rauta-Lielahti"
+    "hasOfferCatalog": {
+        "@type": "OfferCatalog",
+        "name": "Products",
+        "url": "https://keskoapi.com/api/products/PK035-K-rauta-Lielahti"
+    }
   }
 ```
 
