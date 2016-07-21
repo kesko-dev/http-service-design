@@ -2,8 +2,8 @@
 
 [![Build Status](https://travis-ci.org/kesko-dev/http-service-design.svg?branch=master)](https://travis-ci.org/kesko-dev/http-service-design)
 
-::: warning
-The guide is work in progress. This is an initial version and not all recommendations have been verified in practice yet.
+::: danger
+The guide is work in progress. Some advice are even contradictory and not stabilized yet. 
 :::
 
 *This documentation was forked
