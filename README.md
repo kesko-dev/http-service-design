@@ -140,7 +140,7 @@ It is best to provide version specification in the headers, with other
 metadata, using the `Accept` header with a custom content type, e.g.:
 
 ```
-Accept: application/vnd.heroku+json; version=3
+Accept: application/json; version=3
 ```
 
 #### (TODO) When and how to bump API version
