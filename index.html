@@ -5,7 +5,7 @@
     <link rel="stylesheet" href="assets/style.css?t=a44c9e9d">
     <link rel="stylesheet" href="assets/docpress.css?t=52d3f23f">
     <link rel="stylesheet" href="assets/custom.css?t=62fec3b8">
-    <script src="assets/search.js?t=317adcaf"></script>
+    <script src="assets/search.js?t=b416c18d"></script>
     <script src="assets/script.js?t=820b7ffa"></script>
     <title>Kesko HTTP Service Design</title>
     <meta name="viewport" content="width=device-width">
@@ -127,7 +127,7 @@ be specified with all requests. Default versions should be avoided as they are
 very difficult, at best, to change in the future.</p>
 <p>It is best to provide version specification in the headers, with other
 metadata, using the <code>Accept</code> header with a custom content type, e.g.:</p>
-<pre><code>Accept: application/vnd.heroku+json; version=3
+<pre><code>Accept: application/json; version=3
 </code></pre>
 <h4 id="(todo)-when-and-how-to-bump-api-version"><a class="header-anchor" href="#todo-when-and-how-to-bump-api-version" aria-hidden="true">&#xB6;</a> (TODO) When and how to bump API version</h4>
 <p>TODO</p>
