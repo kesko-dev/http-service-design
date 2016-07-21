@@ -2,6 +2,10 @@
 
 [![Build Status](https://travis-ci.org/kesko-dev/http-service-design.svg?branch=master)](https://travis-ci.org/kesko-dev/http-service-design)
 
+::: warning
+The guide is work in progress. This is an initial version and not all recommendations have been verified in practice yet.
+:::
+
 *This documentation was forked
 from https://github.com/interagent/http-api-design and transformed to use
 [docpress](https://github.com/docpress/docpress) instead of [GitBook](https://www.gitbook.com/)
