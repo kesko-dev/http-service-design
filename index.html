@@ -5,7 +5,7 @@
     <link rel="stylesheet" href="assets/style.css?t=a44c9e9d">
     <link rel="stylesheet" href="assets/docpress.css?t=52d3f23f">
     <link rel="stylesheet" href="assets/custom.css?t=62fec3b8">
-    <script src="assets/search.js?t=4faa1ea4"></script>
+    <script src="assets/search.js?t=a6dfc5bd"></script>
     <script src="assets/script.js?t=820b7ffa"></script>
     <title>Kesko HTTP Service Design</title>
     <meta name="viewport" content="width=device-width">
@@ -30,63 +30,31 @@ from <a href="https://github.com/interagent/http-api-design">https://github.com/
 format. The original documentation is extracted from work on the
 <a href="https://devcenter.heroku.com/articles/platform-api-reference">Heroku Platform API</a>.</em></p>
 <h3 id="goal-of-the-document"><a class="header-anchor" href="#goal-of-the-document" aria-hidden="true">&#xB6;</a> Goal of the document</h3>
-<p>This guide is intended to help using common conventions across multiple APIs
-and microservices in Kesko. Focus is primarily on how APIs should look and be built so
-that they feel consistent to API users. In addition to that, some high level architecture
-principles are also explained.</p>
+<p><strong>Support developers to create consistent and good APIs.</strong></p>
 <p>Our goals here are consistency and focusing on business logic while
 avoiding design bikeshedding. We&#x2019;re looking for <em>a good, consistent,
 well-documented way</em> to design APIs, not necessarily <em>the only/ideal
 way</em>.</p>
-<p>We assume you&#x2019;re familiar with the basics of HTTP+JSON APIs and won&#x2019;t
-cover all of the fundamentals of those in this guide.</p>
-<h2 id="microservice-architecture"><a class="header-anchor" href="#microservice-architecture" aria-hidden="true">&#xB6;</a> Microservice architecture</h2>
-<div class="alert alert-info" role="alert">
-<p>The purpose of this guide is to focus on the API design details instead
-of the whole architecture, but going through the underlying architecture principles
-helps to understand the whole picture.</p>
-</div>
-<p><a href="http://martinfowler.com/microservices/">Microservice architecture</a>
-is used to gain certain benefits. It&#x2019;s not a silver bullet
-but has been a good fit for the domain.</p>
-<p><strong>Good resources</strong></p>
-<ul>
-<li><a href="https://medium.com/wso2-insight/guidelines-for-designing-microservices-71ee1997776c#.d3wax578u">https://medium.com/wso2-insight/guidelines-for-designing-microservices-71ee1997776c#.d3wax578u</a></li>
-<li><a href="https://www.nginx.com/blog/microservices-at-netflix-architectural-best-practices/">https://www.nginx.com/blog/microservices-at-netflix-architectural-best-practices/</a></li>
-<li><a href="http://highscalability.com/blog/2014/4/8/microservices-not-a-free-lunch.html">http://highscalability.com/blog/2014/4/8/microservices-not-a-free-lunch.html</a></li>
-</ul>
-<p>The following rules should apply for the services to benefit of the architecture:</p>
-<h3 id="service-has-a-single-responsibility"><a class="header-anchor" href="#service-has-a-single-responsibility" aria-hidden="true">&#xB6;</a> Service has a single responsibility</h3>
-<p>Align them with the business capabilities. By focusing to a single responsibility,
-technology choices can be picked to suit the domain best. For example you could
-model graph heavy data with a graph-database etc.</p>
-<p>If you are unsure about the splitting, it might be a better to create a broader
-service first, and split later. This way you don&#x2019;t end up with unnecesssary
-operational overhead.</p>
-<h3 id="services-are-independent"><a class="header-anchor" href="#services-are-independent" aria-hidden="true">&#xB6;</a> Services are independent</h3>
-<p>For example product service can be deployed independently from product order status service.
-When product order status service is down or has broken, product service should not be
-affected by the incident.</p>
-<p>Services should also have independent attached resources such as Redis, Postgres etc.</p>
-<div class="alert alert-warning" role="alert">
-<p>Example smell of bad design: deploying a service requires updating another service
-at the same time. Correct versioning fixes this.</p>
-</div>
-<h3 id="design-for-failures"><a class="header-anchor" href="#design-for-failures" aria-hidden="true">&#xB6;</a> Design for failures</h3>
-<p>When accessing data of other microservices, you should use their normal HTTP APIs.
-Treat them as you would e.g. when integrating to GitHub API.
-And as said before, assume it to be down at any time.</p>
-<p>Each microservice should be horizontally scalable to avoid single point of failures.</p>
-<h3 id="delegate-common-service-needs-to-an-api-gateway"><a class="header-anchor" href="#delegate-common-service-needs-to-an-api-gateway" aria-hidden="true">&#xB6;</a> Delegate common service needs to an API gateway</h3>
-<p>For example:</p>
-<ul>
-<li><strong>Rate limiting</strong></li>
-<li><strong>Monitoring</strong></li>
-<li><strong>API user authentication management</strong>
-e.g. giving access to the whole API for a 3rd party developer.
-<em>Different than API GW &lt;-&gt; Microservice authentication</em></li>
-</ul>
-<h2 id="foundations"><a class="header-anchor" href="#foundations" aria-hidden="true">&#xB6;</a> Foundations</h2>
+<h2 id="service-developer-start-here"><a class="header-anchor" href="#service-developer-start-here" aria-hidden="true">&#xB6;</a> Service developer, start here</h2>
+<p>When a new service is created, these artifacts/actions are required:</p>
+<ol>
+<li>
+<p>API documentation as <a href="http://swagger.io/">Swagger 2.0 YAML</a></p>
+<p>The latest Swagger YAML should be always uploaded to IBM API Connect.</p>
+</li>
+<li>
+<p>Public API is exposed via IBM API Connect</p>
+</li>
+<li>
+<p>&#x201C;How to get the service running&#x201D; -documentation</p>
+<p>Preferably the service would use Docker or Vagrant to run local environment.
+This makes it easier to kickstart the development for new developers or
+maintainers joining the project.</p>
+</li>
+</ol>
+<p>See also <a href="#service-building-tips">Service building tips</a> for additional information
+how to build services.</p>
+<h2 id="api-basics"><a class="header-anchor" href="#api-basics" aria-hidden="true">&#xB6;</a> API Basics</h2>
 <h3 id="separate-concerns"><a class="header-anchor" href="#separate-concerns" aria-hidden="true">&#xB6;</a> Separate Concerns</h3>
 <p>Keep things simple while designing by separating the concerns between the
 different parts of the request and response cycle. Keeping simple rules here
@@ -130,7 +98,7 @@ metadata, using the <code>Accept</code> header with a custom content type, e.g.:
 <pre><code>Accept: application/json; version=3
 </code></pre>
 <h4 id="(todo)-when-and-how-to-bump-api-version"><a class="header-anchor" href="#todo-when-and-how-to-bump-api-version" aria-hidden="true">&#xB6;</a> (TODO) When and how to bump API version</h4>
-<p>TODO</p>
+<p><a href="http://zalando.github.io/restful-api-guidelines/compatibility/Compatibility.html#must-do-not-use-uri-versioning">http://zalando.github.io/restful-api-guidelines/compatibility/Compatibility.html#must-do-not-use-uri-versioning</a></p>
 <h3 id="require-secure-connections"><a class="header-anchor" href="#require-secure-connections" aria-hidden="true">&#xB6;</a> Require Secure Connections</h3>
 <p>Require secure connections with TLS to access the API, without exception.
 It&#x2019;s not worth trying to figure out or explain when it is OK to use TLS
@@ -215,7 +183,7 @@ for money to make sure the API user acknowledges that using float values is dang
   &quot;<span class="hljs-attr">birthYear</span>&quot;: <span class="hljs-number">1991</span>
 }
 </code></pre>
-<h2 id="requests"><a class="header-anchor" href="#requests" aria-hidden="true">&#xB6;</a> Requests</h2>
+<h2 id="api-requests"><a class="header-anchor" href="#api-requests" aria-hidden="true">&#xB6;</a> API Requests</h2>
 <h3 id="(todo)-authentication"><a class="header-anchor" href="#todo-authentication" aria-hidden="true">&#xB6;</a> (TODO) Authentication</h3>
 <p>TODO</p>
 <h3 id="accept-serialized-json-in-request-bodies"><a class="header-anchor" href="#accept-serialized-json-in-request-bodies" aria-hidden="true">&#xB6;</a> Accept serialized JSON in request bodies</h3>
@@ -288,9 +256,11 @@ them under a standard <code>actions</code> prefix, to clearly delineate them:</p
 <pre><code>/resources/:resource/actions/:action
 </code></pre>
 <p>e.g.</p>
-<pre><code>/runs/:runId/actions/stop
-</code></pre>
-<p>Use <code>PUT</code> method for actions.</p>
+<ul>
+<li><code>/products/actions/search</code></li>
+<li><code>/machines/1/actions/shutdown</code></li>
+</ul>
+<p>Use <code>POST</code> or <code>PUT</code> method for actions.</p>
 <h3 id="use-consistent-naming-in-paths-and-parameters"><a class="header-anchor" href="#use-consistent-naming-in-paths-and-parameters" aria-hidden="true">&#xB6;</a> Use consistent naming in paths and parameters</h3>
 <p>When each API follows the same rules, using the Kesko API ecosystem becomes
 much easier as you can trust to certain conventions.</p>
@@ -360,7 +330,7 @@ case above where a product belongs to an assortment belongs to a store:</p>
 <p>In other words, have only one level of parent/child relationship depth in one path.</p>
 <h4 id="resource-names"><a class="header-anchor" href="#resource-names" aria-hidden="true">&#xB6;</a> Resource names</h4>
 <p>Use the plural version of a resource name unless the resource in question is a singleton within the system (for example, the overall status of the system might be <code>/status</code>). This keeps it consistent in the way you refer to particular resources.</p>
-<h2 id="responses"><a class="header-anchor" href="#responses" aria-hidden="true">&#xB6;</a> Responses</h2>
+<h2 id="api-responses"><a class="header-anchor" href="#api-responses" aria-hidden="true">&#xB6;</a> API Responses</h2>
 <h3 id="generate-structured-errors"><a class="header-anchor" href="#generate-structured-errors" aria-hidden="true">&#xB6;</a> Generate structured errors</h3>
 <p>Generate consistent, structured response bodies on errors. Include a
 human-readable error <code>message</code>.</p>
@@ -562,6 +532,77 @@ work a user needs to do to try the API, e.g.:</p>
 <pre><code class="lang-bash">$ <span class="pl-c1">export</span> TOKEN=... <span class="pl-c"># acquire from dashboard</span>
 $ curl -is https://<span class="hljs-variable">$TOKEN</span>@service.com/users
 </code></pre>
+<h2 id="service-building-tips"><a class="header-anchor" href="#service-building-tips" aria-hidden="true">&#xB6;</a> Service building tips</h2>
+<div class="alert alert-info" role="alert">
+<p>The purpose of this guide is to focus on the API design details instead
+of the whole architecture, but going through the underlying architecture principles
+helps to understand the whole picture.</p>
+</div>
+<p>Most of the backend services are built with <a href="http://martinfowler.com/microservices/">microservice architecture</a>. The architecture
+is used to gain certain benefits. It&#x2019;s not a silver bullet
+but has been a good fit for the domain.</p>
+<p><strong>Good resources</strong></p>
+<ul>
+<li><a href="https://medium.com/wso2-insight/guidelines-for-designing-microservices-71ee1997776c#.d3wax578u">https://medium.com/wso2-insight/guidelines-for-designing-microservices-71ee1997776c#.d3wax578u</a></li>
+<li><a href="https://www.nginx.com/blog/microservices-at-netflix-architectural-best-practices/">https://www.nginx.com/blog/microservices-at-netflix-architectural-best-practices/</a></li>
+<li><a href="http://highscalability.com/blog/2014/4/8/microservices-not-a-free-lunch.html">http://highscalability.com/blog/2014/4/8/microservices-not-a-free-lunch.html</a></li>
+</ul>
+<p>The following rules should apply for the services to benefit of the architecture:</p>
+<h3 id="service-has-a-single-responsibility"><a class="header-anchor" href="#service-has-a-single-responsibility" aria-hidden="true">&#xB6;</a> Service has a single responsibility</h3>
+<p>Align them with the business capabilities. By focusing to a single responsibility,
+technology choices can be picked to suit the domain best. For example you could
+model graph heavy data with a graph-database etc.</p>
+<p>If you are unsure about the splitting, it might be a better to create a broader
+service first, and split later. This way you don&#x2019;t end up with unnecesssary
+operational overhead.</p>
+<h3 id="services-are-independent"><a class="header-anchor" href="#services-are-independent" aria-hidden="true">&#xB6;</a> Services are independent</h3>
+<p>For example product service can be deployed independently from product order status service.
+When product order status service is down or has broken, product service should not be
+affected by the incident.</p>
+<p>Services should also have independent attached resources such as Redis, Postgres etc.</p>
+<div class="alert alert-warning" role="alert">
+<p>Example smell of bad design: deploying a service requires updating another service
+at the same time. Correct versioning fixes this.</p>
+</div>
+<h3 id="design-for-failures"><a class="header-anchor" href="#design-for-failures" aria-hidden="true">&#xB6;</a> Design for failures</h3>
+<p>When accessing data of other microservices, you should use their normal HTTP APIs.
+Treat them as you would e.g. when integrating to GitHub API.
+And as said before, assume it to be down at any time.</p>
+<p>Each microservice should be horizontally scalable to avoid single point of failures.</p>
+<h3 id="delegate-common-service-needs-to-an-api-gateway"><a class="header-anchor" href="#delegate-common-service-needs-to-an-api-gateway" aria-hidden="true">&#xB6;</a> Delegate common service needs to an API gateway</h3>
+<p>For example:</p>
+<ul>
+<li><strong>Rate limiting</strong></li>
+<li><strong>Monitoring</strong></li>
+<li><strong>API user authentication management</strong>
+e.g. giving access to the whole API for a 3rd party developer.
+<em>Different than API GW &lt;-&gt; Microservice authentication</em></li>
+</ul>
+<h3 id="services-should-have-multiple-environments"><a class="header-anchor" href="#services-should-have-multiple-environments" aria-hidden="true">&#xB6;</a> Services should have multiple environments</h3>
+<p>Environments help in rapid development. This is a good, in practice tested, set of
+environments you should have. At <strong>minimum</strong>, have <code>qa</code> and <code>prod</code> environments.</p>
+<table>
+<thead>
+<tr>
+<th>Environment</th>
+<th>Purpose</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>dev</code></td>
+<td>Experimental. Sharing new features / fixes to other developers or customer. May break at any time, but should be kept as a working environment.</td>
+</tr>
+<tr>
+<td><code>qa</code></td>
+<td>Should be as close as <code>prod</code> as possible. All deployments <strong>must</strong></td>
+</tr>
+</tbody>
+</table>
+<p>be tested in this environment before deployment to <code>prod</code>.
+<code>prod</code>      | The real deal. Used to serve end users. Response times should ideally be &lt;100ms</p>
+<p>All these environments should be as similar to eachother as possible, e.g. have
+the same external dependencies(Postgres 9.4).</p>
 
         </div>
       </div>
@@ -572,19 +613,9 @@ $ curl -is https://<span class="hljs-variable">$TOKEN</span>@service.com/users
             </li>
             <li class="menu-item -level-1"><a href="#goal-of-the-document" class="link title link-goal-of-the-document">Goal of the document</a>
             </li>
-            <li class="menu-item -level-1 -parent"><a href="#microservice-architecture" class="link title link-microservice-architecture">Microservice architecture</a>
-              <ul class="submenu">
-                <li class="menu-item -level-2"><a href="#service-has-a-single-responsibility" class="link title link-service-has-a-single-responsibility">Service has a single responsibility</a>
-                </li>
-                <li class="menu-item -level-2"><a href="#services-are-independent" class="link title link-services-are-independent">Services are independent</a>
-                </li>
-                <li class="menu-item -level-2"><a href="#design-for-failures" class="link title link-design-for-failures">Design for failures</a>
-                </li>
-                <li class="menu-item -level-2"><a href="#delegate-common-service-needs-to-an-api-gateway" class="link title link-delegate-common-service-needs-to-an-api-gateway">Delegate common service needs to an API gateway</a>
-                </li>
-              </ul>
+            <li class="menu-item -level-1"><a href="#service-developer-start-here" class="link title link-service-developer-start-here">Service developer, start here</a>
             </li>
-            <li class="menu-item -level-1 -parent"><a href="#foundations" class="link title link-foundations">Foundations</a>
+            <li class="menu-item -level-1 -parent"><a href="#api-basics" class="link title link-api-basics">API Basics</a>
               <ul class="submenu">
                 <li class="menu-item -level-2"><a href="#separate-concerns" class="link title link-separate-concerns">Separate Concerns</a>
                 </li>
@@ -606,7 +637,7 @@ $ curl -is https://<span class="hljs-variable">$TOKEN</span>@service.com/users
                 </li>
               </ul>
             </li>
-            <li class="menu-item -level-1 -parent"><a href="#requests" class="link title link-requests">Requests</a>
+            <li class="menu-item -level-1 -parent"><a href="#api-requests" class="link title link-api-requests">API Requests</a>
               <ul class="submenu">
                 <li class="menu-item -level-2"><a href="#(todo)-authentication" class="link title link-(todo)-authentication">(TODO) Authentication</a>
                 </li>
@@ -620,7 +651,7 @@ $ curl -is https://<span class="hljs-variable">$TOKEN</span>@service.com/users
                 </li>
               </ul>
             </li>
-            <li class="menu-item -level-1 -parent"><a href="#responses" class="link title link-responses">Responses</a>
+            <li class="menu-item -level-1 -parent"><a href="#api-responses" class="link title link-api-responses">API Responses</a>
               <ul class="submenu">
                 <li class="menu-item -level-2"><a href="#generate-structured-errors" class="link title link-generate-structured-errors">Generate structured errors</a>
                 </li>
@@ -647,6 +678,20 @@ $ curl -is https://<span class="hljs-variable">$TOKEN</span>@service.com/users
                 <li class="menu-item -level-2"><a href="#use-swagger-2.0-to-describe-apis" class="link title link-use-swagger-2.0-to-describe-apis">Use Swagger 2.0 to describe APIs</a>
                 </li>
                 <li class="menu-item -level-2"><a href="#provide-human-readable-documentation" class="link title link-provide-human-readable-documentation">Provide human-readable documentation</a>
+                </li>
+              </ul>
+            </li>
+            <li class="menu-item -level-1 -parent"><a href="#service-building-tips" class="link title link-service-building-tips">Service building tips</a>
+              <ul class="submenu">
+                <li class="menu-item -level-2"><a href="#service-has-a-single-responsibility" class="link title link-service-has-a-single-responsibility">Service has a single responsibility</a>
+                </li>
+                <li class="menu-item -level-2"><a href="#services-are-independent" class="link title link-services-are-independent">Services are independent</a>
+                </li>
+                <li class="menu-item -level-2"><a href="#design-for-failures" class="link title link-design-for-failures">Design for failures</a>
+                </li>
+                <li class="menu-item -level-2"><a href="#delegate-common-service-needs-to-an-api-gateway" class="link title link-delegate-common-service-needs-to-an-api-gateway">Delegate common service needs to an API gateway</a>
+                </li>
+                <li class="menu-item -level-2"><a href="#services-should-have-multiple-environments" class="link title link-services-should-have-multiple-environments">Services should have multiple environments</a>
                 </li>
               </ul>
             </li>
