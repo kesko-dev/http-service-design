@@ -3,7 +3,7 @@
 [![Build Status](https://travis-ci.org/kesko-dev/http-service-design.svg?branch=master)](https://travis-ci.org/kesko-dev/http-service-design)
 
 ::: danger
-The guide is work in progress. Some advice are even contradictory and not stabilized yet. 
+The guide is work in progress. Some advice are even contradictory and not stabilized yet.
 :::
 
 *This documentation was forked
@@ -14,84 +14,34 @@ format. The original documentation is extracted from work on the
 
 ### Goal of the document
 
-This guide is intended to help using common conventions across multiple APIs
-and microservices in Kesko. Focus is primarily on how APIs should look and be built so
-that they feel consistent to API users. In addition to that, some high level architecture
-principles are also explained.
+**Support developers to create consistent and good APIs.**
 
 Our goals here are consistency and focusing on business logic while
-avoiding design bikeshedding. We’re looking for _a good, consistent,
-well-documented way_ to design APIs, not necessarily _the only/ideal
-way_.
-
-We assume you’re familiar with the basics of HTTP+JSON APIs and won’t
-cover all of the fundamentals of those in this guide.
+avoiding design bikeshedding. We’re looking for *a good, consistent,
+well-documented way* to design APIs, not necessarily *the only/ideal
+way*.
 
 
-## Microservice architecture
+## Service developer, start here
 
-::: info
-The purpose of this guide is to focus on the API design details instead
-of the whole architecture, but going through the underlying architecture principles
-helps to understand the whole picture.
-:::
+When a new service is created, these artifacts/actions are required:
 
-[Microservice architecture](http://martinfowler.com/microservices/)
-is used to gain certain benefits. It's not a silver bullet
-but has been a good fit for the domain.
+1. API documentation as [Swagger 2.0 YAML](http://swagger.io/)
 
-**Good resources**
+    The latest Swagger YAML should be always uploaded to IBM API Connect.
 
-* https://medium.com/wso2-insight/guidelines-for-designing-microservices-71ee1997776c#.d3wax578u
-* https://www.nginx.com/blog/microservices-at-netflix-architectural-best-practices/
-* http://highscalability.com/blog/2014/4/8/microservices-not-a-free-lunch.html
+2. Public API is exposed via IBM API Connect
 
+3. "How to get the service running" -documentation
 
-The following rules should apply for the services to benefit of the architecture:
+    Preferably the service would use Docker or Vagrant to run local environment.
+    This makes it easier to kickstart the development for new developers or
+    maintainers joining the project.
 
-### Service has a single responsibility
+See also [Service building tips](#service-building-tips) for additional information
+how to build services.
 
-Align them with the business capabilities. By focusing to a single responsibility,
-technology choices can be picked to suit the domain best. For example you could
-model graph heavy data with a graph-database etc.
-
-If you are unsure about the splitting, it might be a better to create a broader
-service first, and split later. This way you don't end up with unnecesssary
-operational overhead.
-
-### Services are independent
-
-For example product service can be deployed independently from product order status service.
-When product order status service is down or has broken, product service should not be
-affected by the incident.
-
-Services should also have independent attached resources such as Redis, Postgres etc.
-
-::: warning
-Example smell of bad design: deploying a service requires updating another service
-at the same time. Correct versioning fixes this.
-:::
-
-### Design for failures
-
-When accessing data of other microservices, you should use their normal HTTP APIs.
-Treat them as you would e.g. when integrating to GitHub API.
-And as said before, assume it to be down at any time.
-
-Each microservice should be horizontally scalable to avoid single point of failures.
-
-### Delegate common service needs to an API gateway
-
-For example:
-
-* **Rate limiting**
-* **Monitoring**
-* **API user authentication management**
-  e.g. giving access to the whole API for a 3rd party developer.
-  *Different than API GW <-> Microservice authentication*
-
-
-## Foundations
+## API Basics
 
 ### Separate Concerns
 
@@ -145,7 +95,7 @@ Accept: application/json; version=3
 
 #### (TODO) When and how to bump API version
 
-TODO
+http://zalando.github.io/restful-api-guidelines/compatibility/Compatibility.html#must-do-not-use-uri-versioning
 
 ### Require Secure Connections
 
@@ -253,7 +203,7 @@ Example of good JSON naming conventions:
 ```
 
 
-## Requests
+## API Requests
 
 ### (TODO) Authentication
 
@@ -314,11 +264,10 @@ them under a standard `actions` prefix, to clearly delineate them:
 
 e.g.
 
-```
-/runs/:runId/actions/stop
-```
+* `/products/actions/search`
+* `/machines/1/actions/shutdown`
 
-Use `PUT` method for actions.
+Use `POST` or `PUT` method for actions.
 
 ### Use consistent naming in paths and parameters
 
@@ -390,7 +339,7 @@ In other words, have only one level of parent/child relationship depth in one pa
 Use the plural version of a resource name unless the resource in question is a singleton within the system (for example, the overall status of the system might be `/status`). This keeps it consistent in the way you refer to particular resources.
 
 
-## Responses
+## API Responses
 
 ### Generate structured errors
 
@@ -663,3 +612,81 @@ work a user needs to do to try the API, e.g.:
 $ export TOKEN=... # acquire from dashboard
 $ curl -is https://$TOKEN@service.com/users
 ```
+
+
+## Service building tips
+
+::: info
+The purpose of this guide is to focus on the API design details instead
+of the whole architecture, but going through the underlying architecture principles
+helps to understand the whole picture.
+:::
+
+Most of the backend services are built with [microservice architecture](http://martinfowler.com/microservices/). The architecture
+is used to gain certain benefits. It's not a silver bullet
+but has been a good fit for the domain.
+
+**Good resources**
+
+* https://medium.com/wso2-insight/guidelines-for-designing-microservices-71ee1997776c#.d3wax578u
+* https://www.nginx.com/blog/microservices-at-netflix-architectural-best-practices/
+* http://highscalability.com/blog/2014/4/8/microservices-not-a-free-lunch.html
+
+
+The following rules should apply for the services to benefit of the architecture:
+
+### Service has a single responsibility
+
+Align them with the business capabilities. By focusing to a single responsibility,
+technology choices can be picked to suit the domain best. For example you could
+model graph heavy data with a graph-database etc.
+
+If you are unsure about the splitting, it might be a better to create a broader
+service first, and split later. This way you don't end up with unnecesssary
+operational overhead.
+
+### Services are independent
+
+For example product service can be deployed independently from product order status service.
+When product order status service is down or has broken, product service should not be
+affected by the incident.
+
+Services should also have independent attached resources such as Redis, Postgres etc.
+
+::: warning
+Example smell of bad design: deploying a service requires updating another service
+at the same time. Correct versioning fixes this.
+:::
+
+### Design for failures
+
+When accessing data of other microservices, you should use their normal HTTP APIs.
+Treat them as you would e.g. when integrating to GitHub API.
+And as said before, assume it to be down at any time.
+
+Each microservice should be horizontally scalable to avoid single point of failures.
+
+### Delegate common service needs to an API gateway
+
+For example:
+
+* **Rate limiting**
+* **Monitoring**
+* **API user authentication management**
+  e.g. giving access to the whole API for a 3rd party developer.
+  *Different than API GW <-> Microservice authentication*
+
+### Services should have multiple environments
+
+Environments help in rapid development. This is a good, in practice tested, set of
+environments you should have. At **minimum**, have `qa` and `prod` environments.
+
+Environment | Purpose
+------------|---------------------
+`dev`       | Experimental. Sharing new features / fixes to other developers or customer. May break at any time, but should be kept as a working environment.
+`qa`        | Should be as close as `prod` as possible. All deployments **must**
+be tested in this environment before deployment to `prod`.
+`prod`      | The real deal. Used to serve end users. Response times should ideally be <100ms
+
+All these environments should be as similar to eachother as possible, e.g. have
+the same external dependencies(Postgres 9.4).
