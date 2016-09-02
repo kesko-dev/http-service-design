@@ -115,37 +115,6 @@ information about:
 
     API Connect does this when correct Swagger examples are specified.
 
-### Use consistent JSON conventions
-
-Use camelcased attribute names, plural array keys and correct JSON types for data. You may use strings
-for money to make sure the API user acknowledges that using float values is dangerous.
-
-Example of good JSON naming conventions:
-
-```json
-{
-  "id": "123e4567-e89b-12d3-a456-426655440000",
-  "name": "Test Name",
-  "plussaCards": [
-    {
-      "number": "0123123191999",
-      "owner": {
-        "_link": "https://keskoapi.com/api/users/123e4567-e89b-12d3-a456-426655440003",
-        "id": "123e4567-e89b-12d3-a456-426655440003"
-      }
-    },
-    {
-      "number": "0123123191998",
-      "owner": {
-        "_link": "https://keskoapi.com/api/users/123e4567-e89b-12d3-a456-426655440003",
-        "id": "123e4567-e89b-12d3-a456-426655440003"
-      }
-    }
-  ],
-  "birthYear": 1991
-}
-```
-
 ### Accept serialized JSON in request bodies
 
 Accept serialized JSON on `PUT`/`PATCH`/`POST` request bodies, either
@@ -206,7 +175,7 @@ e.g.
 
 Use `POST` or `PUT` method for actions.
 
-### Use consistent naming in paths and parameters
+### Follow naming conventions
 
 When each API follows the same rules, using the Kesko API ecosystem becomes
 much easier as you can trust to certain conventions.
@@ -219,6 +188,37 @@ be taken into use in all services.
 Changing API conventions across
 multiple services takes time, so choose wisely.
 :::
+
+#### Use JSON naming conventions
+
+Use camelcased attribute names, plural array keys and correct JSON types for data. You may use strings
+for money to make sure the API user acknowledges that using float values is dangerous.
+
+Example of good JSON naming conventions:
+
+```json
+{
+  "id": "123e4567-e89b-12d3-a456-426655440000",
+  "name": "Test Name",
+  "plussaCards": [
+    {
+      "number": "0123123191999",
+      "owner": {
+        "_link": "https://keskoapi.com/api/users/123e4567-e89b-12d3-a456-426655440003",
+        "id": "123e4567-e89b-12d3-a456-426655440003"
+      }
+    },
+    {
+      "number": "0123123191998",
+      "owner": {
+        "_link": "https://keskoapi.com/api/users/123e4567-e89b-12d3-a456-426655440003",
+        "id": "123e4567-e89b-12d3-a456-426655440003"
+      }
+    }
+  ],
+  "birthYear": 1991
+}
+```
 
 #### Downcase and dash-separated paths
 
