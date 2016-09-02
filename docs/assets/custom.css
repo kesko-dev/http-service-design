@@ -24,6 +24,11 @@
   margin-top: 0.5em;
 }
 
+.markdown-body img {
+  padding-top: 50px;
+  padding-bottom: 50px;
+}
+
 .header-anchor {
   position: absolute;
   left: -0.8em;
