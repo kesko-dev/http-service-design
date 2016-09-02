@@ -78,7 +78,7 @@ how to build services.
     JWT Payload contains information about the end user who made the request.
     Service can use this e.g. information to implement fine grained authorization.
 
-### Require Versioning Headers
+### Require versioning headers
 
 Versioning and the transition between versions can be one of the more
 challenging aspects of designing and operating an API. As such, it is best to
@@ -400,7 +400,7 @@ Render UUIDs in downcased `8-4-4-4-12` format, e.g.:
 
 ## Services should
 
-### Separate Concerns
+### Separate concerns
 
 Keep things simple while designing by separating the concerns between the
 different parts of the request and response cycle. Keeping simple rules here
@@ -412,7 +412,7 @@ contents and headers to communicate metadata. Query params may be used as a
 means to pass header information also in edge cases, but headers are preferred
 as they are more flexible and can convey more diverse information.
 
-### Use Message Queue Architecture In Heavy Requests
+### Use message queue architecture in heavy requests
 
 Separate long running requests to worker processes which live independently
 from request-response lifecycle. For example a video resolution scaling would be
@@ -432,7 +432,7 @@ Benefits:
 
 Read more: https://devcenter.heroku.com/articles/background-jobs-queueing
 
-### Divide Large Responses Across Requests with Ranges
+### Provide pagination with ranges
 
 Large responses should be broken across multiple requests using `Range` headers
 to specify when more data is available and how to retrieve it. See the
@@ -440,7 +440,7 @@ to specify when more data is available and how to retrieve it. See the
 for the details of request and response headers, status codes, limits,
 ordering, and iteration.
 
-### Provide Request-Ids for Introspection
+### Provide request-ids for debugging
 
 Include a `Request-Id` header in each API response, populated with a
 UUID value. By logging these values on the client, server and any backing
@@ -629,7 +629,7 @@ However prefer linking to the original data instead of inlining data.
 
 
 
-## Service building guidelines
+## Service internal building guidelines
 
 ::: info
 The purpose of this guide is to focus on the API design details instead
