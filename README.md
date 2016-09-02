@@ -55,6 +55,11 @@ how to build services.
 
 ### Support Kesko OpenID authentication
 
+[OpenID Connect](http://openid.net/connect/) is used for user authentication.
+It provides a way for applications(Mobile, web or any clients) to perform
+operations on behalf of the user without ever needing to know the details
+of that identity (e.g. username and password).
+
 ![Authentication diagram](docs/assets/img/kesko-authentication.png)
 
 1. Client executes [OAuth2 Authorization code flow](https://www.ibm.com/support/knowledgecenter/SSWHYP_4.0.0/com.ibm.apimgmt.apionprem.doc/tutorial_apionprem_security_OAuth.html) to receive `access_token`.
