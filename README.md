@@ -37,9 +37,14 @@ When a new service is created, these artifacts/actions are required:
 
     The latest Swagger YAML should be always uploaded to IBM API Connect.
 
+    **TODO:** Add a link and description how to exactly do this.
+
 2. Public API is exposed via IBM API Connect
 
 3. "How to get the service running" -documentation
+
+    Your service repository should provide or link to this type of documentation in
+    README.md file.
 
     Preferably the service would use Docker or Vagrant to run local environment.
     This makes it easier to kickstart the development for new developers or
@@ -48,9 +53,30 @@ When a new service is created, these artifacts/actions are required:
 See also [Service building tips](#service-building-tips) for additional information
 how to build services.
 
-### (TODO) Implement authentication with OpenID Connect
+### Support Kesko OpenID authentication
 
-https://www.ibm.com/support/knowledgecenter/SSWHYP_4.0.0/com.ibm.apimgmt.apionprem.doc/tutorial_apionprem_security_OAuth.html
+![Authentication diagram](docs/assets/img/kesko-authentication.png)
+
+1. Client executes [OAuth2 Authorization code flow](https://www.ibm.com/support/knowledgecenter/SSWHYP_4.0.0/com.ibm.apimgmt.apionprem.doc/tutorial_apionprem_security_OAuth.html) to receive `access_token`.
+
+    The `access_token` is an encoded JWT token.
+
+2. Client requests `/api/x` via API Gateway with correct Authorization: Bearer <access_token> header.
+3. API Gateway includes an `x-token` header in the request and passes it to Service X.
+
+    The `x-token` is a shared secret between Service X and API Gateway.
+
+4. Service X verifies `x-token` and Authorization header.
+
+    Authorization header is a JWT token which has been encoded with a
+    private key *(only OpenID knows this)*.
+    Service can verify the signature by using a public key which
+    OpenID service publicly provides.
+
+5. Service X can now trust that the request came via API Gateway and JWT payload was created by OpenID service.
+
+    JWT Payload contains information about the end user who made the request.
+    Service can use this e.g. information to implement fine grained authorization.
 
 ### Require Versioning Headers
 
