@@ -5,7 +5,7 @@
     <link rel="stylesheet" href="assets/style.css?t=a44c9e9d">
     <link rel="stylesheet" href="assets/docpress.css?t=52d3f23f">
     <link rel="stylesheet" href="assets/custom.css?t=62fec3b8">
-    <script src="assets/search.js?t=9debae67"></script>
+    <script src="assets/search.js?t=6de68cd1"></script>
     <script src="assets/script.js?t=820b7ffa"></script>
     <title>Kesko HTTP Service Design</title>
     <meta name="viewport" content="width=device-width">
@@ -115,32 +115,6 @@ version.</p>
 <p>API Connect does this when correct Swagger examples are specified.</p>
 </li>
 </ul>
-<h3 id="use-consistent-json-conventions"><a class="header-anchor" href="#use-consistent-json-conventions" aria-hidden="true">&#xB6;</a> Use consistent JSON conventions</h3>
-<p>Use camelcased attribute names, plural array keys and correct JSON types for data. You may use strings
-for money to make sure the API user acknowledges that using float values is dangerous.</p>
-<p>Example of good JSON naming conventions:</p>
-<pre><code class="lang-json">{
-  &quot;<span class="hljs-attr">id</span>&quot;: <span class="pl-s">&quot;123e4567-e89b-12d3-a456-426655440000&quot;</span>,
-  &quot;<span class="hljs-attr">name</span>&quot;: <span class="pl-s">&quot;Test Name&quot;</span>,
-  &quot;<span class="hljs-attr">plussaCards</span>&quot;: [
-    {
-      &quot;<span class="hljs-attr">number</span>&quot;: <span class="pl-s">&quot;0123123191999&quot;</span>,
-      &quot;<span class="hljs-attr">owner</span>&quot;: {
-        &quot;<span class="hljs-attr">_link</span>&quot;: <span class="pl-s">&quot;https://keskoapi.com/api/users/123e4567-e89b-12d3-a456-426655440003&quot;</span>,
-        &quot;<span class="hljs-attr">id</span>&quot;: <span class="pl-s">&quot;123e4567-e89b-12d3-a456-426655440003&quot;</span>
-      }
-    },
-    {
-      &quot;<span class="hljs-attr">number</span>&quot;: <span class="pl-s">&quot;0123123191998&quot;</span>,
-      &quot;<span class="hljs-attr">owner</span>&quot;: {
-        &quot;<span class="hljs-attr">_link</span>&quot;: <span class="pl-s">&quot;https://keskoapi.com/api/users/123e4567-e89b-12d3-a456-426655440003&quot;</span>,
-        &quot;<span class="hljs-attr">id</span>&quot;: <span class="pl-s">&quot;123e4567-e89b-12d3-a456-426655440003&quot;</span>
-      }
-    }
-  ],
-  &quot;<span class="hljs-attr">birthYear</span>&quot;: <span class="hljs-number">1991</span>
-}
-</code></pre>
 <h3 id="accept-serialized-json-in-request-bodies"><a class="header-anchor" href="#accept-serialized-json-in-request-bodies" aria-hidden="true">&#xB6;</a> Accept serialized JSON in request bodies</h3>
 <p>Accept serialized JSON on <code>PUT</code>/<code>PATCH</code>/<code>POST</code> request bodies, either
 instead of or in addition to form-encoded data. This creates symmetry
@@ -216,7 +190,7 @@ them under a standard <code>actions</code> prefix, to clearly delineate them:</p
 <li><code>/machines/1/actions/shutdown</code></li>
 </ul>
 <p>Use <code>POST</code> or <code>PUT</code> method for actions.</p>
-<h3 id="use-consistent-naming-in-paths-and-parameters"><a class="header-anchor" href="#use-consistent-naming-in-paths-and-parameters" aria-hidden="true">&#xB6;</a> Use consistent naming in paths and parameters</h3>
+<h3 id="follow-naming-conventions"><a class="header-anchor" href="#follow-naming-conventions" aria-hidden="true">&#xB6;</a> Follow naming conventions</h3>
 <p>When each API follows the same rules, using the Kesko API ecosystem becomes
 much easier as you can trust to certain conventions.</p>
 <p>If some conventions are not documented, always follow existing conventions.
@@ -226,6 +200,32 @@ be taken into use in all services.</p>
 <p>Changing API conventions across
 multiple services takes time, so choose wisely.</p>
 </div>
+<h4 id="use-json-naming-conventions"><a class="header-anchor" href="#use-json-naming-conventions" aria-hidden="true">&#xB6;</a> Use JSON naming conventions</h4>
+<p>Use camelcased attribute names, plural array keys and correct JSON types for data. You may use strings
+for money to make sure the API user acknowledges that using float values is dangerous.</p>
+<p>Example of good JSON naming conventions:</p>
+<pre><code class="lang-json">{
+  &quot;<span class="hljs-attr">id</span>&quot;: <span class="pl-s">&quot;123e4567-e89b-12d3-a456-426655440000&quot;</span>,
+  &quot;<span class="hljs-attr">name</span>&quot;: <span class="pl-s">&quot;Test Name&quot;</span>,
+  &quot;<span class="hljs-attr">plussaCards</span>&quot;: [
+    {
+      &quot;<span class="hljs-attr">number</span>&quot;: <span class="pl-s">&quot;0123123191999&quot;</span>,
+      &quot;<span class="hljs-attr">owner</span>&quot;: {
+        &quot;<span class="hljs-attr">_link</span>&quot;: <span class="pl-s">&quot;https://keskoapi.com/api/users/123e4567-e89b-12d3-a456-426655440003&quot;</span>,
+        &quot;<span class="hljs-attr">id</span>&quot;: <span class="pl-s">&quot;123e4567-e89b-12d3-a456-426655440003&quot;</span>
+      }
+    },
+    {
+      &quot;<span class="hljs-attr">number</span>&quot;: <span class="pl-s">&quot;0123123191998&quot;</span>,
+      &quot;<span class="hljs-attr">owner</span>&quot;: {
+        &quot;<span class="hljs-attr">_link</span>&quot;: <span class="pl-s">&quot;https://keskoapi.com/api/users/123e4567-e89b-12d3-a456-426655440003&quot;</span>,
+        &quot;<span class="hljs-attr">id</span>&quot;: <span class="pl-s">&quot;123e4567-e89b-12d3-a456-426655440003&quot;</span>
+      }
+    }
+  ],
+  &quot;<span class="hljs-attr">birthYear</span>&quot;: <span class="hljs-number">1991</span>
+}
+</code></pre>
 <h4 id="downcase-and-dash-separated-paths"><a class="header-anchor" href="#downcase-and-dash-separated-paths" aria-hidden="true">&#xB6;</a> Downcase and dash-separated paths</h4>
 <p>Use downcased and dash-separated path names, for alignment with
 hostnames, e.g:</p>
@@ -631,15 +631,13 @@ the same external dependencies(Postgres 9.4).</p>
                 </li>
                 <li class="menu-item -level-2"><a href="#provide-human-readable-documentation-via-api-connect" class="link title link-provide-human-readable-documentation-via-api-connect">Provide human-readable documentation via API Connect</a>
                 </li>
-                <li class="menu-item -level-2"><a href="#use-consistent-json-conventions" class="link title link-use-consistent-json-conventions">Use consistent JSON conventions</a>
-                </li>
                 <li class="menu-item -level-2"><a href="#accept-serialized-json-in-request-bodies" class="link title link-accept-serialized-json-in-request-bodies">Accept serialized JSON in request bodies</a>
                 </li>
                 <li class="menu-item -level-2"><a href="#use-consistent-http-methods" class="link title link-use-consistent-http-methods">Use consistent HTTP methods</a>
                 </li>
                 <li class="menu-item -level-2"><a href="#special-action-endpoints" class="link title link-special-action-endpoints">Special action endpoints</a>
                 </li>
-                <li class="menu-item -level-2"><a href="#use-consistent-naming-in-paths-and-parameters" class="link title link-use-consistent-naming-in-paths-and-parameters">Use consistent naming in paths and parameters</a>
+                <li class="menu-item -level-2"><a href="#follow-naming-conventions" class="link title link-follow-naming-conventions">Follow naming conventions</a>
                 </li>
                 <li class="menu-item -level-2"><a href="#respond-structured-and-consistent-errors" class="link title link-respond-structured-and-consistent-errors">Respond structured &amp; consistent errors</a>
                 </li>
