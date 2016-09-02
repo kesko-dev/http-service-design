@@ -5,7 +5,7 @@
     <link rel="stylesheet" href="assets/style.css?t=a44c9e9d">
     <link rel="stylesheet" href="assets/docpress.css?t=52d3f23f">
     <link rel="stylesheet" href="assets/custom.css?t=62fec3b8">
-    <script src="assets/search.js?t=35b7d692"></script>
+    <script src="assets/search.js?t=9debae67"></script>
     <script src="assets/script.js?t=820b7ffa"></script>
     <title>Kesko HTTP Service Design</title>
     <meta name="viewport" content="width=device-width">
@@ -40,7 +40,7 @@ app development, communication, API design process, and more.</p>
 avoiding design bikeshedding. We&#x2019;re looking for <em>a good, consistent,
 well-documented way</em> to design APIs, not necessarily <em>the only/ideal
 way</em>.</p>
-<h2 id="service-must"><a class="header-anchor" href="#service-must" aria-hidden="true">&#xB6;</a> Service must</h2>
+<h2 id="services-must"><a class="header-anchor" href="#services-must" aria-hidden="true">&#xB6;</a> Services must</h2>
 <h3 id="provide-certain-mandatory-artifactsactions"><a class="header-anchor" href="#provide-certain-mandatory-artifactsactions" aria-hidden="true">&#xB6;</a> Provide certain mandatory artifacts/actions</h3>
 <p>When a new service is created, these artifacts/actions are required:</p>
 <ol>
@@ -77,7 +77,7 @@ metadata, using the <code>Accept</code> header with a custom content type, e.g.:
 for more.</p>
 <h4 id="(todo)-when-and-how-to-bump-api-version"><a class="header-anchor" href="#todo-when-and-how-to-bump-api-version" aria-hidden="true">&#xB6;</a> (TODO) When and how to bump API version</h4>
 <p>Follow <a href="http://zalando.github.io/restful-api-guidelines/compatibility/Compatibility.html#must-do-not-use-uri-versioning">Zalando versioning guidelines</a>.</p>
-<h3 id="require-secure-connections"><a class="header-anchor" href="#require-secure-connections" aria-hidden="true">&#xB6;</a> Require Secure Connections</h3>
+<h3 id="require-https"><a class="header-anchor" href="#require-https" aria-hidden="true">&#xB6;</a> Require HTTPS</h3>
 <p>Require secure connections with TLS to access the API, without exception.
 It&#x2019;s not worth trying to figure out or explain when it is OK to use TLS
 and when it&#x2019;s not. Just require TLS for everything.</p>
@@ -354,7 +354,7 @@ service, especially auto-incrementing IDs.</p>
 <p>Render UUIDs in downcased <code>8-4-4-4-12</code> format, e.g.:</p>
 <pre><code>&quot;id&quot;: &quot;01234567-89ab-cdef-0123-456789abcdef&quot;
 </code></pre>
-<h2 id="service-should"><a class="header-anchor" href="#service-should" aria-hidden="true">&#xB6;</a> Service should</h2>
+<h2 id="services-should"><a class="header-anchor" href="#services-should" aria-hidden="true">&#xB6;</a> Services should</h2>
 <h3 id="separate-concerns"><a class="header-anchor" href="#separate-concerns" aria-hidden="true">&#xB6;</a> Separate Concerns</h3>
 <p>Keep things simple while designing by separating the concerns between the
 different parts of the request and response cycle. Keeping simple rules here
@@ -597,13 +597,15 @@ environments you should have. At <strong>minimum</strong>, have <code>qa</code> 
 </tr>
 <tr>
 <td><code>qa</code></td>
-<td>Should be as close as <code>prod</code> as possible. All deployments <strong>must</strong></td>
+<td>Should be as close as <code>prod</code> as possible. All deployments <strong>must</strong> be tested in this environment before deployment to <code>prod</code>.</td>
+</tr>
+<tr>
+<td><code>prod</code></td>
+<td>The real deal. Used to serve end users. Response times should ideally be &lt;100ms</td>
 </tr>
 </tbody>
 </table>
-<p>be tested in this environment before deployment to <code>prod</code>.
-<code>prod</code>      | The real deal. Used to serve end users. Response times should ideally be &lt;100ms</p>
-<p>All these environments should be as similar to eachother as possible, e.g. have
+<p>All these environments should be as similar to each other as possible, e.g. have
 the same external dependencies(Postgres 9.4).</p>
 
         </div>
@@ -615,7 +617,7 @@ the same external dependencies(Postgres 9.4).</p>
             </li>
             <li class="menu-item -level-1"><a href="#goal-of-the-document" class="link title link-goal-of-the-document">Goal of the document</a>
             </li>
-            <li class="menu-item -level-1 -parent"><a href="#service-must" class="link title link-service-must">Service must</a>
+            <li class="menu-item -level-1 -parent"><a href="#services-must" class="link title link-services-must">Services must</a>
               <ul class="submenu">
                 <li class="menu-item -level-2"><a href="#provide-certain-mandatory-artifactsactions" class="link title link-provide-certain-mandatory-artifactsactions">Provide certain mandatory artifacts/actions</a>
                 </li>
@@ -623,7 +625,7 @@ the same external dependencies(Postgres 9.4).</p>
                 </li>
                 <li class="menu-item -level-2"><a href="#require-versioning-headers" class="link title link-require-versioning-headers">Require Versioning Headers</a>
                 </li>
-                <li class="menu-item -level-2"><a href="#require-secure-connections" class="link title link-require-secure-connections">Require Secure Connections</a>
+                <li class="menu-item -level-2"><a href="#require-https" class="link title link-require-https">Require HTTPS</a>
                 </li>
                 <li class="menu-item -level-2"><a href="#use-swagger-2.0-to-describe-apis" class="link title link-use-swagger-2.0-to-describe-apis">Use Swagger 2.0 to describe APIs</a>
                 </li>
@@ -649,7 +651,7 @@ the same external dependencies(Postgres 9.4).</p>
                 </li>
               </ul>
             </li>
-            <li class="menu-item -level-1 -parent"><a href="#service-should" class="link title link-service-should">Service should</a>
+            <li class="menu-item -level-1 -parent"><a href="#services-should" class="link title link-services-should">Services should</a>
               <ul class="submenu">
                 <li class="menu-item -level-2"><a href="#separate-concerns" class="link title link-separate-concerns">Separate Concerns</a>
                 </li>
