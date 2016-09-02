@@ -5,7 +5,7 @@
     <link rel="stylesheet" href="assets/style.css?t=a44c9e9d">
     <link rel="stylesheet" href="assets/docpress.css?t=52d3f23f">
     <link rel="stylesheet" href="assets/custom.css?t=39201656">
-    <script src="assets/search.js?t=1d4f25c1"></script>
+    <script src="assets/search.js?t=764e76ff"></script>
     <script src="assets/script.js?t=820b7ffa"></script>
     <title>Kesko HTTP Service Design</title>
     <meta name="viewport" content="width=device-width">
@@ -78,8 +78,12 @@ of that identity (e.g. username and password).</p>
 <p>Client requests <code>/api/x</code> via API Gateway with correct Authorization: Bearer &lt;access_token&gt; header.</p>
 </li>
 <li>
-<p>API Gateway includes an <code>x-token</code> header in the request and passes it to Service X.</p>
+<p>API Gateway includes e.g. <code>x-token</code> header in the request and passes it to Service X.</p>
 <p>The <code>x-token</code> is a shared secret between Service X and API Gateway.</p>
+<p><strong>Note:</strong> <code>x-token</code> is just one of the ways to authenticate requests between
+API Gateway and backing services. It is important that there is <strong>some</strong>
+mechanism to authenticate the requests, but it doesn&#x2019;t need to be
+exactly <code>x-token</code> header mechanism.</p>
 </li>
 <li>
 <p>Service X verifies <code>x-token</code> and Authorization header.</p>
