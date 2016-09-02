@@ -67,9 +67,14 @@ of that identity (e.g. username and password).
     The `access_token` is an encoded JWT token.
 
 2. Client requests `/api/x` via API Gateway with correct Authorization: Bearer <access_token> header.
-3. API Gateway includes an `x-token` header in the request and passes it to Service X.
+3. API Gateway includes e.g. `x-token` header in the request and passes it to Service X.
 
     The `x-token` is a shared secret between Service X and API Gateway.
+
+    **Note:** `x-token` is just one of the ways to authenticate requests between
+    API Gateway and backing services. It is important that there is **some**
+    mechanism to authenticate the requests, but it doesn't need to be
+    exactly `x-token` header mechanism.
 
 4. Service X verifies `x-token` and Authorization header.
 
