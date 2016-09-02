@@ -5,7 +5,7 @@
     <link rel="stylesheet" href="assets/style.css?t=a44c9e9d">
     <link rel="stylesheet" href="assets/docpress.css?t=52d3f23f">
     <link rel="stylesheet" href="assets/custom.css?t=62fec3b8">
-    <script src="assets/search.js?t=a6dfc5bd"></script>
+    <script src="assets/search.js?t=35b7d692"></script>
     <script src="assets/script.js?t=820b7ffa"></script>
     <title>Kesko HTTP Service Design</title>
     <meta name="viewport" content="width=device-width">
@@ -30,12 +30,18 @@ from <a href="https://github.com/interagent/http-api-design">https://github.com/
 format. The original documentation is extracted from work on the
 <a href="https://devcenter.heroku.com/articles/platform-api-reference">Heroku Platform API</a>.</em></p>
 <h3 id="goal-of-the-document"><a class="header-anchor" href="#goal-of-the-document" aria-hidden="true">&#xB6;</a> Goal of the document</h3>
-<p><strong>Support developers to create consistent and good APIs.</strong></p>
+<blockquote>
+<p>Support developers to create consistent and good APIs.</p>
+</blockquote>
+<p>There are tens or hundreds of individual APIs and this guide tries to ensure that
+API users can trust them to follow the same conventions. This speeds up
+app development, communication, API design process, and more.</p>
 <p>Our goals here are consistency and focusing on business logic while
 avoiding design bikeshedding. We&#x2019;re looking for <em>a good, consistent,
 well-documented way</em> to design APIs, not necessarily <em>the only/ideal
 way</em>.</p>
-<h2 id="service-developer-start-here"><a class="header-anchor" href="#service-developer-start-here" aria-hidden="true">&#xB6;</a> Service developer, start here</h2>
+<h2 id="service-must"><a class="header-anchor" href="#service-must" aria-hidden="true">&#xB6;</a> Service must</h2>
+<h3 id="provide-certain-mandatory-artifactsactions"><a class="header-anchor" href="#provide-certain-mandatory-artifactsactions" aria-hidden="true">&#xB6;</a> Provide certain mandatory artifacts/actions</h3>
 <p>When a new service is created, these artifacts/actions are required:</p>
 <ol>
 <li>
@@ -54,38 +60,8 @@ maintainers joining the project.</p>
 </ol>
 <p>See also <a href="#service-building-tips">Service building tips</a> for additional information
 how to build services.</p>
-<h2 id="api-basics"><a class="header-anchor" href="#api-basics" aria-hidden="true">&#xB6;</a> API Basics</h2>
-<h3 id="separate-concerns"><a class="header-anchor" href="#separate-concerns" aria-hidden="true">&#xB6;</a> Separate Concerns</h3>
-<p>Keep things simple while designing by separating the concerns between the
-different parts of the request and response cycle. Keeping simple rules here
-allows for greater focus on larger and harder problems.</p>
-<p>Requests and responses will be made to address a particular resource or
-collection. Use the path to indicate identity, the body to transfer the
-contents and headers to communicate metadata. Query params may be used as a
-means to pass header information also in edge cases, but headers are preferred
-as they are more flexible and can convey more diverse information.</p>
-<h3 id="use-message-queue-architecture-in-heavy-requests"><a class="header-anchor" href="#use-message-queue-architecture-in-heavy-requests" aria-hidden="true">&#xB6;</a> Use Message Queue Architecture In Heavy Requests</h3>
-<p>Separate long running requests to worker processes which live independently
-from request-response lifecycle. For example a video resolution scaling would be
-a perfect use case for worker architecture. Good rule of thumb is that if
-your processing takes &gt;500ms, consider using a background worker.</p>
-<p>Benefits:</p>
-<ul>
-<li>
-<p><strong>Always fast HTTP responses (even though the actual processing might take time).</strong> Use a ticketing or similar system to be able to poll progress information.</p>
-</li>
-<li>
-<p><strong>Decouple job processing from web framework.</strong> Allows you to write the worker processing with a different language since the jobs are defined in a generic job queue.</p>
-</li>
-<li>
-<p><strong>Job queues are robust.</strong> They allow retrying, alerts from increasing job queue depth etc.
-Worker can be disposed at any time and the job is still persisted in the queue.</p>
-</li>
-<li>
-<p><strong>Scale worker processes independently from HTTP responses.</strong> Background processing might need different specs from the server, e.g. more CPU. HTTP serving is usually more IO-bound.</p>
-</li>
-</ul>
-<p>Read more: <a href="https://devcenter.heroku.com/articles/background-jobs-queueing">https://devcenter.heroku.com/articles/background-jobs-queueing</a></p>
+<h3 id="(todo)-implement-authentication-with-openid-connect"><a class="header-anchor" href="#todo-implement-authentication-with-openid-connect" aria-hidden="true">&#xB6;</a> (TODO) Implement authentication with OpenID Connect</h3>
+<p><a href="https://www.ibm.com/support/knowledgecenter/SSWHYP_4.0.0/com.ibm.apimgmt.apionprem.doc/tutorial_apionprem_security_OAuth.html">https://www.ibm.com/support/knowledgecenter/SSWHYP_4.0.0/com.ibm.apimgmt.apionprem.doc/tutorial_apionprem_security_OAuth.html</a></p>
 <h3 id="require-versioning-headers"><a class="header-anchor" href="#require-versioning-headers" aria-hidden="true">&#xB6;</a> Require Versioning Headers</h3>
 <p>Versioning and the transition between versions can be one of the more
 challenging aspects of designing and operating an API. As such, it is best to
@@ -97,8 +73,10 @@ very difficult, at best, to change in the future.</p>
 metadata, using the <code>Accept</code> header with a custom content type, e.g.:</p>
 <pre><code>Accept: application/json; version=3
 </code></pre>
+<p>See <a href="http://zalando.github.io/restful-api-guidelines/compatibility/Compatibility.html#must-do-not-use-uri-versioning">Zalando versioning guidelines</a>
+for more.</p>
 <h4 id="(todo)-when-and-how-to-bump-api-version"><a class="header-anchor" href="#todo-when-and-how-to-bump-api-version" aria-hidden="true">&#xB6;</a> (TODO) When and how to bump API version</h4>
-<p><a href="http://zalando.github.io/restful-api-guidelines/compatibility/Compatibility.html#must-do-not-use-uri-versioning">http://zalando.github.io/restful-api-guidelines/compatibility/Compatibility.html#must-do-not-use-uri-versioning</a></p>
+<p>Follow <a href="http://zalando.github.io/restful-api-guidelines/compatibility/Compatibility.html#must-do-not-use-uri-versioning">Zalando versioning guidelines</a>.</p>
 <h3 id="require-secure-connections"><a class="header-anchor" href="#require-secure-connections" aria-hidden="true">&#xB6;</a> Require Secure Connections</h3>
 <p>Require secure connections with TLS to access the API, without exception.
 It&#x2019;s not worth trying to figure out or explain when it is OK to use TLS
@@ -110,52 +88,32 @@ is not possible, respond with <code>403 Forbidden</code>.</p>
 providing any clear gain.  Clients that rely on redirects double up on
 server traffic and render TLS useless since sensitive data will already
 have been exposed during the first call.</p>
-<h3 id="divide-large-responses-across-requests-with-ranges"><a class="header-anchor" href="#divide-large-responses-across-requests-with-ranges" aria-hidden="true">&#xB6;</a> Divide Large Responses Across Requests with Ranges</h3>
-<p>Large responses should be broken across multiple requests using <code>Range</code> headers
-to specify when more data is available and how to retrieve it. See the
-<a href="https://devcenter.heroku.com/articles/platform-api-reference#ranges">Heroku Platform API discussion of Ranges</a>
-for the details of request and response headers, status codes, limits,
-ordering, and iteration.</p>
-<h3 id="provide-request-ids-for-introspection"><a class="header-anchor" href="#provide-request-ids-for-introspection" aria-hidden="true">&#xB6;</a> Provide Request-Ids for Introspection</h3>
-<p>Include a <code>Request-Id</code> header in each API response, populated with a
-UUID value. By logging these values on the client, server and any backing
-services, it provides a mechanism to trace, diagnose and debug requests.</p>
-<h3 id="support-http-cache-headers"><a class="header-anchor" href="#support-http-cache-headers" aria-hidden="true">&#xB6;</a> Support HTTP cache headers</h3>
-<p>Recommended way is using an <code>ETag</code> header in all responses, identifying the specific
-version of the returned resource. This allows users to cache resources
-and use requests with this value in the <code>If-None-Match</code> header to determine
-if the cache should be updated.</p>
-<p>You can also use different HTTP cache headers for specific use cases but consider
-<code>ETag</code> as the default pick.</p>
-<h3 id="use-json-ld-with-schema.org-vocabulary"><a class="header-anchor" href="#use-json-ld-with-schemaorg-vocabulary" aria-hidden="true">&#xB6;</a> Use JSON-LD with <a href="http://schema.org">schema.org</a> vocabulary</h3>
-<p>Use JSON-LD format with API response data. Link other entities by referencing to an IRI which is expected to return another <a href="http://schema.org">schema.org</a> entity.</p>
-<p><a href="http://Schema.org">Schema.org</a> aims to create and maintain open schemas for structured data in the web. Structured data means data that is accompanied by semantics through an ontology. In other words structured data contains information about the data types and hierarchical links and relationships to other entities. JSON-LD is a format specification that extends JSON with linking capabilities. Linked data enables for example rich results in Google search.</p>
-<p>Example of JSON-LD with <a href="http://schema.org">schema.org</a> vocabulary:</p>
-<pre><code class="lang-json"> {
-    &quot;<span class="hljs-attr">@context</span>&quot;: <span class="pl-s">&quot;http://schema.org&quot;</span>,
-    &quot;<span class="hljs-attr">@type</span>&quot;: <span class="pl-s">&quot;HardwareStore&quot;</span>,
-    &quot;<span class="hljs-attr">branchCode</span>&quot;: <span class="pl-s">&quot;PK035-K-rauta-Lielahti&quot;</span>,
-    &quot;<span class="hljs-attr">name</span>&quot;: <span class="pl-s">&quot;K-Rauta Lielahti&quot;</span>,
-    &quot;<span class="hljs-attr">telephone</span>&quot;: <span class="pl-s">&quot;010 538 0300&quot;</span>,
-    &quot;<span class="hljs-attr">email</span>&quot;: <span class="pl-s">&quot;lielahti@k-rauta.fi&quot;</span>,
-    &quot;<span class="hljs-attr">address</span>&quot;: {
-      &quot;<span class="hljs-attr">@type</span>&quot;: <span class="pl-s">&quot;PostalAddress&quot;</span>,
-      &quot;<span class="hljs-attr">streetAddress</span>&quot;: <span class="pl-s">&quot;Turvesuonkatu 10&quot;</span>,
-      &quot;<span class="hljs-attr">addressLocality</span>&quot;: <span class="pl-s">&quot;Tampere&quot;</span>,
-      &quot;<span class="hljs-attr">postalCode</span>&quot;: <span class="pl-s">&quot;33400&quot;</span>,
-      &quot;<span class="hljs-attr">addressCountry</span>&quot;: <span class="pl-s">&quot;FI&quot;</span>
-    },
-    &quot;<span class="hljs-attr">hasOfferCatalog</span>&quot;: {
-        &quot;<span class="hljs-attr">@type</span>&quot;: <span class="pl-s">&quot;OfferCatalog&quot;</span>,
-        &quot;<span class="hljs-attr">name</span>&quot;: <span class="pl-s">&quot;Products&quot;</span>,
-        &quot;<span class="hljs-attr">url</span>&quot;: <span class="pl-s">&quot;https://keskoapi.com/api/products/PK035-K-rauta-Lielahti&quot;</span>
-    }
-  }
-</code></pre>
-<p>Read more:</p>
+<h3 id="use-swagger-2.0-to-describe-apis"><a class="header-anchor" href="#use-swagger-20-to-describe-apis" aria-hidden="true">&#xB6;</a> Use Swagger 2.0 to describe APIs</h3>
+<p>Your APIs should be described as Swagger 2.0 YAML format. This shouldn&#x2019;t be
+a manually maintained. It should be generated from the service&#x2019;s
+HTTP endpoint code.</p>
+<div class="alert alert-danger" role="alert">
+<p>Don&#x2019;t maintain API endpoints, parameters and their descriptions in multiple places.
+They will go out of sync.</p>
+</div>
+<h3 id="provide-human-readable-documentation-via-api-connect"><a class="header-anchor" href="#provide-human-readable-documentation-via-api-connect" aria-hidden="true">&#xB6;</a> Provide human-readable documentation via API Connect</h3>
+<p>In addition to endpoint details, provide an API overview with
+information about:</p>
 <ul>
-<li><a href="https://schema.org/">https://schema.org/</a></li>
-<li><a href="http://json-ld.org/">http://json-ld.org/</a></li>
+<li>
+<p>API stability and versioning, including how to select the desired API
+version.</p>
+</li>
+<li>
+<p>Common request and response headers.</p>
+</li>
+<li>
+<p>Error serialization format.</p>
+</li>
+<li>
+<p>Examples of using the API with clients in different languages.</p>
+<p>API Connect does this when correct Swagger examples are specified.</p>
+</li>
 </ul>
 <h3 id="use-consistent-json-conventions"><a class="header-anchor" href="#use-consistent-json-conventions" aria-hidden="true">&#xB6;</a> Use consistent JSON conventions</h3>
 <p>Use camelcased attribute names, plural array keys and correct JSON types for data. You may use strings
@@ -183,9 +141,6 @@ for money to make sure the API user acknowledges that using float values is dang
   &quot;<span class="hljs-attr">birthYear</span>&quot;: <span class="hljs-number">1991</span>
 }
 </code></pre>
-<h2 id="api-requests"><a class="header-anchor" href="#api-requests" aria-hidden="true">&#xB6;</a> API Requests</h2>
-<h3 id="(todo)-authentication"><a class="header-anchor" href="#todo-authentication" aria-hidden="true">&#xB6;</a> (TODO) Authentication</h3>
-<p>TODO</p>
 <h3 id="accept-serialized-json-in-request-bodies"><a class="header-anchor" href="#accept-serialized-json-in-request-bodies" aria-hidden="true">&#xB6;</a> Accept serialized JSON in request bodies</h3>
 <p>Accept serialized JSON on <code>PUT</code>/<code>PATCH</code>/<code>POST</code> request bodies, either
 instead of or in addition to form-encoded data. This creates symmetry
@@ -301,18 +256,15 @@ service-api.com/app-setups
 </tr>
 <tr>
 <td><strong>Arrays</strong></td>
-<td><code>?ids=1&amp;ids=2</code></td>
-<td><code>?ids=1,2</code>, <code>?id=1&amp;id=2</code></td>
-<td>Use plural in parameter name</td>
-</tr>
-<tr>
-<td><strong>Arrays</strong></td>
-<td><code>?a=1&amp;a=2</code></td>
-<td><code>?a=1,2</code></td>
-<td></td>
+<td><code>?id=1&amp;id=2</code></td>
+<td><code>?ids=1,2</code>, <code>?ids=1&amp;ids=2</code></td>
+<td>Use singular in parameter name</td>
 </tr>
 </tbody>
 </table>
+<p>If your API requests are complex and need a lot of query parameters, consider
+moving all parameters to a configurable body request JSON object similar to
+Elasticsearch queries.</p>
 <h4 id="minimize-path-nesting"><a class="header-anchor" href="#minimize-path-nesting" aria-hidden="true">&#xB6;</a> Minimize path nesting</h4>
 <p>In data models with nested parent/child resource relationships, paths
 may become deeply nested, e.g.:</p>
@@ -329,9 +281,10 @@ case above where a product belongs to an assortment belongs to a store:</p>
 </code></pre>
 <p>In other words, have only one level of parent/child relationship depth in one path.</p>
 <h4 id="resource-names"><a class="header-anchor" href="#resource-names" aria-hidden="true">&#xB6;</a> Resource names</h4>
-<p>Use the plural version of a resource name unless the resource in question is a singleton within the system (for example, the overall status of the system might be <code>/status</code>). This keeps it consistent in the way you refer to particular resources.</p>
-<h2 id="api-responses"><a class="header-anchor" href="#api-responses" aria-hidden="true">&#xB6;</a> API Responses</h2>
-<h3 id="generate-structured-errors"><a class="header-anchor" href="#generate-structured-errors" aria-hidden="true">&#xB6;</a> Generate structured errors</h3>
+<p>Use the plural version of a resource name unless the resource in question is a
+singleton within the system (for example, the overall status of the system might
+be <code>/status</code>). This keeps it consistent in the way you refer to particular resources.</p>
+<h3 id="respond-structured-and-consistent-errors"><a class="header-anchor" href="#respond-structured-consistent-errors" aria-hidden="true">&#xB6;</a> Respond structured &amp; consistent errors</h3>
 <p>Generate consistent, structured response bodies on errors. Include a
 human-readable error <code>message</code>.</p>
 <pre><code>HTTP/1.1 400 Bad Request
@@ -349,6 +302,137 @@ human-readable error <code>message</code>.</p>
 }
 </code></pre>
 <p>Use <a href="https://github.com/hapijs/boom">HapiJS Boom error payload format</a>.</p>
+<h3 id="return-appropriate-status-codes"><a class="header-anchor" href="#return-appropriate-status-codes" aria-hidden="true">&#xB6;</a> Return appropriate status codes</h3>
+<p>Return appropriate HTTP status codes with each response. Successful
+responses should be coded according to this guide:</p>
+<ul>
+<li><code>200</code>: Request succeeded for a <code>GET</code>, <code>POST</code>, <code>DELETE</code>, or <code>PATCH</code> call that
+completed synchronously, or a <code>PUT</code> call that synchronously updated an
+existing resource</li>
+<li><code>201</code>: Request succeeded for a <code>POST</code>, or <code>PUT</code> call that synchronously
+created a new resource. It is also best practice to provide a &apos;Location&#x2019;
+header pointing to the newly created resource. This is particularly useful
+in the <code>POST</code> context as the new resource will have a different URL than the
+original request.</li>
+<li><code>202</code>: Request accepted for a <code>POST</code>, <code>PUT</code>, <code>DELETE</code>, or <code>PATCH</code> call that
+will be processed asynchronously. E.g. if your task is processed&#xA0;in the background with a worker.</li>
+<li><code>206</code>: Request succeeded on <code>GET</code>, but only a partial response
+returned: see <a href="#divide-large-responses-across-requests-with-ranges">above on ranges</a></li>
+</ul>
+<p>Pay attention to the use of authentication and authorization error codes:</p>
+<ul>
+<li><code>401 Unauthorized</code>: Request failed because user is not authenticated. E.g. token is not valid.</li>
+<li><code>403 Forbidden</code>: Request failed because user does not have authorization to access a specific resource. E.g. the given token is not allowed to access the resource.</li>
+</ul>
+<p>Return suitable codes to provide additional information when there are errors:</p>
+<ul>
+<li><code>400 Bad Request</code>: Request was incorrectly formed. E.g. invalid json or missing required attributes.</li>
+<li><code>422 Unprocessable Entity</code>: Your request was correctly formed, but contained invalid parameters. E.g. endDate is before startDate.</li>
+<li><code>429 Too Many Requests</code>: You have been rate-limited, retry later.</li>
+<li><code>500 Internal Server Error</code>: Something went wrong on the server, check status site and/or report the issue.</li>
+</ul>
+<p>Refer to the <a href="https://tools.ietf.org/html/rfc7231#section-6">HTTP response code spec</a>
+for guidance on status codes for user error and server error cases.</p>
+<h3 id="use-utc-times-formatted-in-iso8601"><a class="header-anchor" href="#use-utc-times-formatted-in-iso8601" aria-hidden="true">&#xB6;</a> Use UTC times formatted in ISO8601</h3>
+<p>Accept and return times in UTC only. Render times in ISO8601 format,
+e.g.:</p>
+<pre><code>&quot;finishedAt&quot;: &quot;2012-01-01T12:00:00Z&quot;
+</code></pre>
+<p>You may have milliseconds in the timestamp too.</p>
+<h3 id="provide-resource-(uu)ids"><a class="header-anchor" href="#provide-resource-uuids" aria-hidden="true">&#xB6;</a> Provide resource (UU)IDs</h3>
+<p>Use existing globally unique IDs when possible. E.g. use EAN codes for products
+when possible to avoid creating yet another ID. You may use different IDs internally
+but public API should only expose one unique ID for a resource. This one ID should be
+used in resource objects, url paths etc.</p>
+<div class="alert alert-warning" role="alert">
+<p>Think carefully before exposing multiple IDs for resources such as EAN and UUID.</p>
+</div>
+<p>Give each resource an <code>id</code> attribute by default. Use UUIDs unless you
+have a very good reason not to. Don&#x2019;t use IDs that won&#x2019;t be globally
+unique across instances of the service or other resources in the
+service, especially auto-incrementing IDs.</p>
+<p>Render UUIDs in downcased <code>8-4-4-4-12</code> format, e.g.:</p>
+<pre><code>&quot;id&quot;: &quot;01234567-89ab-cdef-0123-456789abcdef&quot;
+</code></pre>
+<h2 id="service-should"><a class="header-anchor" href="#service-should" aria-hidden="true">&#xB6;</a> Service should</h2>
+<h3 id="separate-concerns"><a class="header-anchor" href="#separate-concerns" aria-hidden="true">&#xB6;</a> Separate Concerns</h3>
+<p>Keep things simple while designing by separating the concerns between the
+different parts of the request and response cycle. Keeping simple rules here
+allows for greater focus on larger and harder problems.</p>
+<p>Requests and responses will be made to address a particular resource or
+collection. Use the path to indicate identity, the body to transfer the
+contents and headers to communicate metadata. Query params may be used as a
+means to pass header information also in edge cases, but headers are preferred
+as they are more flexible and can convey more diverse information.</p>
+<h3 id="use-message-queue-architecture-in-heavy-requests"><a class="header-anchor" href="#use-message-queue-architecture-in-heavy-requests" aria-hidden="true">&#xB6;</a> Use Message Queue Architecture In Heavy Requests</h3>
+<p>Separate long running requests to worker processes which live independently
+from request-response lifecycle. For example a video resolution scaling would be
+a perfect use case for worker architecture. Good rule of thumb is that if
+your processing takes &gt;500ms, consider using a background worker.</p>
+<p>Benefits:</p>
+<ul>
+<li>
+<p><strong>Always fast HTTP responses (even though the actual processing might take time).</strong> Use a ticketing or similar system to be able to poll progress information.</p>
+</li>
+<li>
+<p><strong>Decouple job processing from web framework.</strong> Allows you to write the worker processing with a different language since the jobs are defined in a generic job queue.</p>
+</li>
+<li>
+<p><strong>Job queues are robust.</strong> They allow retrying, alerts from increasing job queue depth etc.
+Worker can be disposed at any time and the job is still persisted in the queue.</p>
+</li>
+<li>
+<p><strong>Scale worker processes independently from HTTP responses.</strong> Background processing might need different specs from the server, e.g. more CPU. HTTP serving is usually more IO-bound.</p>
+</li>
+</ul>
+<p>Read more: <a href="https://devcenter.heroku.com/articles/background-jobs-queueing">https://devcenter.heroku.com/articles/background-jobs-queueing</a></p>
+<h3 id="divide-large-responses-across-requests-with-ranges"><a class="header-anchor" href="#divide-large-responses-across-requests-with-ranges" aria-hidden="true">&#xB6;</a> Divide Large Responses Across Requests with Ranges</h3>
+<p>Large responses should be broken across multiple requests using <code>Range</code> headers
+to specify when more data is available and how to retrieve it. See the
+<a href="https://devcenter.heroku.com/articles/platform-api-reference#ranges">Heroku Platform API discussion of Ranges</a>
+for the details of request and response headers, status codes, limits,
+ordering, and iteration.</p>
+<h3 id="provide-request-ids-for-introspection"><a class="header-anchor" href="#provide-request-ids-for-introspection" aria-hidden="true">&#xB6;</a> Provide Request-Ids for Introspection</h3>
+<p>Include a <code>Request-Id</code> header in each API response, populated with a
+UUID value. By logging these values on the client, server and any backing
+services, it provides a mechanism to trace, diagnose and debug requests.</p>
+<h3 id="support-http-cache-headers"><a class="header-anchor" href="#support-http-cache-headers" aria-hidden="true">&#xB6;</a> Support HTTP cache headers</h3>
+<p>Recommended way is using an <code>ETag</code> header in all responses, identifying the specific
+version of the returned resource. This allows users to cache resources
+and use requests with this value in the <code>If-None-Match</code> header to determine
+if the cache should be updated.</p>
+<p>You can also use different HTTP cache headers for specific use cases but consider
+<code>ETag</code> as the default pick.</p>
+<h3 id="use-json-ld-with-schema.org-vocabulary"><a class="header-anchor" href="#use-json-ld-with-schemaorg-vocabulary" aria-hidden="true">&#xB6;</a> Use JSON-LD with <a href="http://schema.org">schema.org</a> vocabulary</h3>
+<p>Use JSON-LD format with API response data. Link other entities by referencing to an IRI which is expected to return another <a href="http://schema.org">schema.org</a> entity.</p>
+<p><a href="http://Schema.org">Schema.org</a> aims to create and maintain open schemas for structured data in the web. Structured data means data that is accompanied by semantics through an ontology. In other words structured data contains information about the data types and hierarchical links and relationships to other entities. JSON-LD is a format specification that extends JSON with linking capabilities. Linked data enables for example rich results in Google search.</p>
+<p>Example of JSON-LD with <a href="http://schema.org">schema.org</a> vocabulary:</p>
+<pre><code class="lang-json"> {
+    &quot;<span class="hljs-attr">@context</span>&quot;: <span class="pl-s">&quot;http://schema.org&quot;</span>,
+    &quot;<span class="hljs-attr">@type</span>&quot;: <span class="pl-s">&quot;HardwareStore&quot;</span>,
+    &quot;<span class="hljs-attr">branchCode</span>&quot;: <span class="pl-s">&quot;PK035-K-rauta-Lielahti&quot;</span>,
+    &quot;<span class="hljs-attr">name</span>&quot;: <span class="pl-s">&quot;K-Rauta Lielahti&quot;</span>,
+    &quot;<span class="hljs-attr">telephone</span>&quot;: <span class="pl-s">&quot;010 538 0300&quot;</span>,
+    &quot;<span class="hljs-attr">email</span>&quot;: <span class="pl-s">&quot;lielahti@k-rauta.fi&quot;</span>,
+    &quot;<span class="hljs-attr">address</span>&quot;: {
+      &quot;<span class="hljs-attr">@type</span>&quot;: <span class="pl-s">&quot;PostalAddress&quot;</span>,
+      &quot;<span class="hljs-attr">streetAddress</span>&quot;: <span class="pl-s">&quot;Turvesuonkatu 10&quot;</span>,
+      &quot;<span class="hljs-attr">addressLocality</span>&quot;: <span class="pl-s">&quot;Tampere&quot;</span>,
+      &quot;<span class="hljs-attr">postalCode</span>&quot;: <span class="pl-s">&quot;33400&quot;</span>,
+      &quot;<span class="hljs-attr">addressCountry</span>&quot;: <span class="pl-s">&quot;FI&quot;</span>
+    },
+    &quot;<span class="hljs-attr">hasOfferCatalog</span>&quot;: {
+        &quot;<span class="hljs-attr">@type</span>&quot;: <span class="pl-s">&quot;OfferCatalog&quot;</span>,
+        &quot;<span class="hljs-attr">name</span>&quot;: <span class="pl-s">&quot;Products&quot;</span>,
+        &quot;<span class="hljs-attr">url</span>&quot;: <span class="pl-s">&quot;https://keskoapi.com/api/products/PK035-K-rauta-Lielahti&quot;</span>
+    }
+  }
+</code></pre>
+<p>Read more:</p>
+<ul>
+<li><a href="https://schema.org/">https://schema.org/</a></li>
+<li><a href="http://json-ld.org/">http://json-ld.org/</a></li>
+</ul>
 <h3 id="gzip-and-keep-json-minified-in-all-responses"><a class="header-anchor" href="#gzip-and-keep-json-minified-in-all-responses" aria-hidden="true">&#xB6;</a> GZip and keep JSON minified in all responses</h3>
 <p>Extra whitespace adds needless response size to requests, and many
 clients for human consumption will automatically &#x201C;prettify&#x201D; JSON
@@ -366,7 +450,57 @@ output. It is best to keep JSON responses minified e.g.:</p>
 }
 </code></pre>
 <p>You should also compress the API responses with GZip if client supports it.</p>
-<h3 id="use-_link-for-foreign-key-relations"><a class="header-anchor" href="#use-for-foreign-key-relations" aria-hidden="true">&#xB6;</a> Use <code>_link</code> for foreign key relations</h3>
+<h3 id="provide-full-resources-where-available"><a class="header-anchor" href="#provide-full-resources-where-available" aria-hidden="true">&#xB6;</a> Provide full resources where available</h3>
+<p>Provide the full resource representation (i.e. the object with all
+attributes) whenever possible in the response. Always provide the full
+resource on 200 and 201 responses, including <code>PUT</code>/<code>PATCH</code> and <code>DELETE</code>
+requests, e.g.:</p>
+<pre><code class="lang-bash">$ curl -X DELETE \
+  https://service.com/apps/1f9b/domains/0fd4
+
+HTTP/1.1 200 OK
+Content-Type: application/json;charset=utf-8
+...
+{
+  <span class="pl-s">&quot;createdAt&quot;</span>: <span class="pl-s">&quot;2012-01-01T12:00:00Z&quot;</span>,
+  <span class="pl-s">&quot;hostname&quot;</span>: <span class="pl-s">&quot;subdomain.example.com&quot;</span>,
+  <span class="pl-s">&quot;id&quot;</span>: <span class="pl-s">&quot;01234567-89ab-cdef-0123-456789abcdef&quot;</span>,
+  <span class="pl-s">&quot;updatedAt&quot;</span>: <span class="pl-s">&quot;2012-01-01T12:00:00Z&quot;</span>
+}
+</code></pre>
+<p>202 responses will not include the full resource representation,
+e.g.:</p>
+<pre><code class="lang-bash">$ curl -X DELETE \
+  https://service.com/apps/1f9b/dynos/05bd
+
+HTTP/1.1 202 Accepted
+Content-Type: application/json;charset=utf-8
+...
+{}
+</code></pre>
+<h3 id="provide-standard-timestamps"><a class="header-anchor" href="#provide-standard-timestamps" aria-hidden="true">&#xB6;</a> Provide standard timestamps</h3>
+<p>Provide <code>createdAt</code> and <code>updatedAt</code> timestamps for resources by default,
+e.g:</p>
+<pre><code class="lang-javascript">{
+  <span class="pl-c">// ...</span>
+  <span class="pl-s">&quot;createdAt&quot;</span>: <span class="pl-s">&quot;2012-01-01T12:00:00Z&quot;</span>,
+  <span class="pl-s">&quot;updatedAt&quot;</span>: <span class="pl-s">&quot;2012-01-01T13:00:00Z&quot;</span>,
+  <span class="pl-c">// ...</span>
+}
+</code></pre>
+<p>These timestamps may not make sense for some resources, in which case
+they can be omitted.</p>
+<h3 id="plan-stability-and-versioning"><a class="header-anchor" href="#plan-stability-and-versioning" aria-hidden="true">&#xB6;</a> Plan stability and versioning</h3>
+<p>Plan and ideally describe the stability of your API or its various endpoints according to
+its maturity and stability, e.g. with prototype/development/production
+flags.</p>
+<p>See the <a href="https://devcenter.heroku.com/articles/api-compatibility-policy">Heroku API compatibility policy</a>
+for a possible stability and change management approach.</p>
+<p>Once your API is declared production-ready and stable, do not make
+backwards incompatible changes within that API version. If you need to
+make backwards-incompatible changes, create a new API with an
+incremented version number.</p>
+<h3 id="(todo)-use-_link-for-foreign-key-relations"><a class="header-anchor" href="#todo-use-for-foreign-key-relations" aria-hidden="true">&#xB6;</a> (TODO) Use <code>_link</code> for foreign key relations</h3>
 <p>Serialize foreign key references with a nested object, e.g.:</p>
 <pre><code class="lang-javascript">{
   <span class="pl-s">&quot;name&quot;</span>: <span class="pl-s">&quot;service-production&quot;</span>,
@@ -400,139 +534,7 @@ or introduce more top-level response fields, e.g.:</p>
 <div class="alert alert-warning" role="alert">
 <p>However prefer linking to the original data instead of inlining data.</p>
 </div>
-<h3 id="provide-full-resources-where-available"><a class="header-anchor" href="#provide-full-resources-where-available" aria-hidden="true">&#xB6;</a> Provide full resources where available</h3>
-<p>Provide the full resource representation (i.e. the object with all
-attributes) whenever possible in the response. Always provide the full
-resource on 200 and 201 responses, including <code>PUT</code>/<code>PATCH</code> and <code>DELETE</code>
-requests, e.g.:</p>
-<pre><code class="lang-bash">$ curl -X DELETE \
-  https://service.com/apps/1f9b/domains/0fd4
-
-HTTP/1.1 200 OK
-Content-Type: application/json;charset=utf-8
-...
-{
-  <span class="pl-s">&quot;createdAt&quot;</span>: <span class="pl-s">&quot;2012-01-01T12:00:00Z&quot;</span>,
-  <span class="pl-s">&quot;hostname&quot;</span>: <span class="pl-s">&quot;subdomain.example.com&quot;</span>,
-  <span class="pl-s">&quot;id&quot;</span>: <span class="pl-s">&quot;01234567-89ab-cdef-0123-456789abcdef&quot;</span>,
-  <span class="pl-s">&quot;updatedAt&quot;</span>: <span class="pl-s">&quot;2012-01-01T12:00:00Z&quot;</span>
-}
-</code></pre>
-<p>202 responses will not include the full resource representation,
-e.g.:</p>
-<pre><code class="lang-bash">$ curl -X DELETE \
-  https://service.com/apps/1f9b/dynos/05bd
-
-HTTP/1.1 202 Accepted
-Content-Type: application/json;charset=utf-8
-...
-{}
-</code></pre>
-<h3 id="provide-resource-(uu)ids"><a class="header-anchor" href="#provide-resource-uuids" aria-hidden="true">&#xB6;</a> Provide resource (UU)IDs</h3>
-<p>Use existing globally unique IDs when possible. E.g. use EAN codes for products
-when possible to avoid creating yet another ID. You may use different IDs internally
-but public API should only expose one unique ID for a resource. This one ID should be
-used in resource objects, url paths etc.</p>
-<div class="alert alert-warning" role="alert">
-<p>Think carefully before exposing multiple IDs for resources such as EAN and UUID.</p>
-</div>
-<p>Give each resource an <code>id</code> attribute by default. Use UUIDs unless you
-have a very good reason not to. Don&#x2019;t use IDs that won&#x2019;t be globally
-unique across instances of the service or other resources in the
-service, especially auto-incrementing IDs.</p>
-<p>Render UUIDs in downcased <code>8-4-4-4-12</code> format, e.g.:</p>
-<pre><code>&quot;id&quot;: &quot;01234567-89ab-cdef-0123-456789abcdef&quot;
-</code></pre>
-<h3 id="use-utc-times-formatted-in-iso8601"><a class="header-anchor" href="#use-utc-times-formatted-in-iso8601" aria-hidden="true">&#xB6;</a> Use UTC times formatted in ISO8601</h3>
-<p>Accept and return times in UTC only. Render times in ISO8601 format,
-e.g.:</p>
-<pre><code>&quot;finishedAt&quot;: &quot;2012-01-01T12:00:00Z&quot;
-</code></pre>
-<p>You may have milliseconds in the timestamp too.</p>
-<h3 id="provide-standard-timestamps"><a class="header-anchor" href="#provide-standard-timestamps" aria-hidden="true">&#xB6;</a> Provide standard timestamps</h3>
-<p>Provide <code>createdAt</code> and <code>updatedAt</code> timestamps for resources by default,
-e.g:</p>
-<pre><code class="lang-javascript">{
-  <span class="pl-c">// ...</span>
-  <span class="pl-s">&quot;createdAt&quot;</span>: <span class="pl-s">&quot;2012-01-01T12:00:00Z&quot;</span>,
-  <span class="pl-s">&quot;updatedAt&quot;</span>: <span class="pl-s">&quot;2012-01-01T13:00:00Z&quot;</span>,
-  <span class="pl-c">// ...</span>
-}
-</code></pre>
-<p>These timestamps may not make sense for some resources, in which case
-they can be omitted.</p>
-<h3 id="return-appropriate-status-codes"><a class="header-anchor" href="#return-appropriate-status-codes" aria-hidden="true">&#xB6;</a> Return appropriate status codes</h3>
-<p>Return appropriate HTTP status codes with each response. Successful
-responses should be coded according to this guide:</p>
-<ul>
-<li><code>200</code>: Request succeeded for a <code>GET</code>, <code>POST</code>, <code>DELETE</code>, or <code>PATCH</code> call that
-completed synchronously, or a <code>PUT</code> call that synchronously updated an
-existing resource</li>
-<li><code>201</code>: Request succeeded for a <code>POST</code>, or <code>PUT</code> call that synchronously
-created a new resource. It is also best practice to provide a &apos;Location&#x2019;
-header pointing to the newly created resource. This is particularly useful
-in the <code>POST</code> context as the new resource will have a different URL than the
-original request.</li>
-<li><code>202</code>: Request accepted for a <code>POST</code>, <code>PUT</code>, <code>DELETE</code>, or <code>PATCH</code> call that
-will be processed asynchronously. E.g. if your task is processed&#xA0;in the background with a worker.</li>
-<li><code>206</code>: Request succeeded on <code>GET</code>, but only a partial response
-returned: see <a href="#divide-large-responses-across-requests-with-ranges">above on ranges</a></li>
-</ul>
-<p>Pay attention to the use of authentication and authorization error codes:</p>
-<ul>
-<li><code>401 Unauthorized</code>: Request failed because user is not authenticated. E.g. token is not valid.</li>
-<li><code>403 Forbidden</code>: Request failed because user does not have authorization to access a specific resource. E.g. the given token is not allowed to access the resource.</li>
-</ul>
-<p>Return suitable codes to provide additional information when there are errors:</p>
-<ul>
-<li><code>400 Bad Request</code>: Request was incorrectly formed. E.g. invalid json or missing required attributes.</li>
-<li><code>422 Unprocessable Entity</code>: Your request was correctly formed, but contained invalid parameters. E.g. endDate is before startDate.</li>
-<li><code>429 Too Many Requests</code>: You have been rate-limited, retry later.</li>
-<li><code>500 Internal Server Error</code>: Something went wrong on the server, check status site and/or report the issue.</li>
-</ul>
-<p>Refer to the <a href="https://tools.ietf.org/html/rfc7231#section-6">HTTP response code spec</a>
-for guidance on status codes for user error and server error cases.</p>
-<h2 id="artifacts"><a class="header-anchor" href="#artifacts" aria-hidden="true">&#xB6;</a> Artifacts</h2>
-<h3 id="plan-stability-and-versioning"><a class="header-anchor" href="#plan-stability-and-versioning" aria-hidden="true">&#xB6;</a> Plan stability and versioning</h3>
-<p>Plan and ideally describe the stability of your API or its various endpoints according to
-its maturity and stability, e.g. with prototype/development/production
-flags.</p>
-<p>See the <a href="https://devcenter.heroku.com/articles/api-compatibility-policy">Heroku API compatibility policy</a>
-for a possible stability and change management approach.</p>
-<p>Once your API is declared production-ready and stable, do not make
-backwards incompatible changes within that API version. If you need to
-make backwards-incompatible changes, create a new API with an
-incremented version number.</p>
-<h3 id="use-swagger-2.0-to-describe-apis"><a class="header-anchor" href="#use-swagger-20-to-describe-apis" aria-hidden="true">&#xB6;</a> Use Swagger 2.0 to describe APIs</h3>
-<p>Your APIs should be described as Swagger 2.0 JSON format. This shouldn&#x2019;t be
-a manually maintained JSON. It should be generated from the service&#x2019;s
-HTTP endpoint code.</p>
-<div class="alert alert-danger" role="alert">
-<p>Don&#x2019;t maintain API endpoints, parameters and their descriptions in multiple places.
-They will go out of sync.</p>
-</div>
-<h3 id="provide-human-readable-documentation"><a class="header-anchor" href="#provide-human-readable-documentation" aria-hidden="true">&#xB6;</a> Provide human-readable documentation</h3>
-<p>Provide human-readable documentation that client developers can use to
-understand your API.</p>
-<p>In addition to endpoint details, provide an API overview with
-information about:</p>
-<ul>
-<li>Authentication, including acquiring and using authentication tokens.</li>
-<li>API stability and versioning, including how to select the desired API
-version.</li>
-<li>Common request and response headers.</li>
-<li>Error serialization format.</li>
-<li>Examples of using the API with clients in different languages.</li>
-</ul>
-<h4 id="provide-examples"><a class="header-anchor" href="#provide-examples" aria-hidden="true">&#xB6;</a> Provide examples</h4>
-<p>Provide executable examples that users can type directly into their
-terminals to see working API calls. To the greatest extent possible,
-these examples should be usable verbatim, to minimize the amount of
-work a user needs to do to try the API, e.g.:</p>
-<pre><code class="lang-bash">$ <span class="pl-c1">export</span> TOKEN=... <span class="pl-c"># acquire from dashboard</span>
-$ curl -is https://<span class="hljs-variable">$TOKEN</span>@service.com/users
-</code></pre>
-<h2 id="service-building-tips"><a class="header-anchor" href="#service-building-tips" aria-hidden="true">&#xB6;</a> Service building tips</h2>
+<h2 id="service-building-guidelines"><a class="header-anchor" href="#service-building-guidelines" aria-hidden="true">&#xB6;</a> Service building guidelines</h2>
 <div class="alert alert-info" role="alert">
 <p>The purpose of this guide is to focus on the API design details instead
 of the whole architecture, but going through the underlying architecture principles
@@ -613,33 +615,21 @@ the same external dependencies(Postgres 9.4).</p>
             </li>
             <li class="menu-item -level-1"><a href="#goal-of-the-document" class="link title link-goal-of-the-document">Goal of the document</a>
             </li>
-            <li class="menu-item -level-1"><a href="#service-developer-start-here" class="link title link-service-developer-start-here">Service developer, start here</a>
-            </li>
-            <li class="menu-item -level-1 -parent"><a href="#api-basics" class="link title link-api-basics">API Basics</a>
+            <li class="menu-item -level-1 -parent"><a href="#service-must" class="link title link-service-must">Service must</a>
               <ul class="submenu">
-                <li class="menu-item -level-2"><a href="#separate-concerns" class="link title link-separate-concerns">Separate Concerns</a>
+                <li class="menu-item -level-2"><a href="#provide-certain-mandatory-artifactsactions" class="link title link-provide-certain-mandatory-artifactsactions">Provide certain mandatory artifacts/actions</a>
                 </li>
-                <li class="menu-item -level-2"><a href="#use-message-queue-architecture-in-heavy-requests" class="link title link-use-message-queue-architecture-in-heavy-requests">Use Message Queue Architecture In Heavy Requests</a>
+                <li class="menu-item -level-2"><a href="#(todo)-implement-authentication-with-openid-connect" class="link title link-(todo)-implement-authentication-with-openid-connect">(TODO) Implement authentication with OpenID Connect</a>
                 </li>
                 <li class="menu-item -level-2"><a href="#require-versioning-headers" class="link title link-require-versioning-headers">Require Versioning Headers</a>
                 </li>
                 <li class="menu-item -level-2"><a href="#require-secure-connections" class="link title link-require-secure-connections">Require Secure Connections</a>
                 </li>
-                <li class="menu-item -level-2"><a href="#divide-large-responses-across-requests-with-ranges" class="link title link-divide-large-responses-across-requests-with-ranges">Divide Large Responses Across Requests with Ranges</a>
+                <li class="menu-item -level-2"><a href="#use-swagger-2.0-to-describe-apis" class="link title link-use-swagger-2.0-to-describe-apis">Use Swagger 2.0 to describe APIs</a>
                 </li>
-                <li class="menu-item -level-2"><a href="#provide-request-ids-for-introspection" class="link title link-provide-request-ids-for-introspection">Provide Request-Ids for Introspection</a>
-                </li>
-                <li class="menu-item -level-2"><a href="#support-http-cache-headers" class="link title link-support-http-cache-headers">Support HTTP cache headers</a>
-                </li>
-                <li class="menu-item -level-2"><a href="#use-json-ld-with-schema.org-vocabulary" class="link title link-use-json-ld-with-schema.org-vocabulary">Use JSON-LD with schema.org vocabulary</a>
+                <li class="menu-item -level-2"><a href="#provide-human-readable-documentation-via-api-connect" class="link title link-provide-human-readable-documentation-via-api-connect">Provide human-readable documentation via API Connect</a>
                 </li>
                 <li class="menu-item -level-2"><a href="#use-consistent-json-conventions" class="link title link-use-consistent-json-conventions">Use consistent JSON conventions</a>
-                </li>
-              </ul>
-            </li>
-            <li class="menu-item -level-1 -parent"><a href="#api-requests" class="link title link-api-requests">API Requests</a>
-              <ul class="submenu">
-                <li class="menu-item -level-2"><a href="#(todo)-authentication" class="link title link-(todo)-authentication">(TODO) Authentication</a>
                 </li>
                 <li class="menu-item -level-2"><a href="#accept-serialized-json-in-request-bodies" class="link title link-accept-serialized-json-in-request-bodies">Accept serialized JSON in request bodies</a>
                 </li>
@@ -649,39 +639,43 @@ the same external dependencies(Postgres 9.4).</p>
                 </li>
                 <li class="menu-item -level-2"><a href="#use-consistent-naming-in-paths-and-parameters" class="link title link-use-consistent-naming-in-paths-and-parameters">Use consistent naming in paths and parameters</a>
                 </li>
-              </ul>
-            </li>
-            <li class="menu-item -level-1 -parent"><a href="#api-responses" class="link title link-api-responses">API Responses</a>
-              <ul class="submenu">
-                <li class="menu-item -level-2"><a href="#generate-structured-errors" class="link title link-generate-structured-errors">Generate structured errors</a>
-                </li>
-                <li class="menu-item -level-2"><a href="#gzip-and-keep-json-minified-in-all-responses" class="link title link-gzip-and-keep-json-minified-in-all-responses">GZip and keep JSON minified in all responses</a>
-                </li>
-                <li class="menu-item -level-2"><a href="#use-_link-for-foreign-key-relations" class="link title link-use-_link-for-foreign-key-relations">Use `_link` for foreign key relations</a>
-                </li>
-                <li class="menu-item -level-2"><a href="#provide-full-resources-where-available" class="link title link-provide-full-resources-where-available">Provide full resources where available</a>
-                </li>
-                <li class="menu-item -level-2"><a href="#provide-resource-(uu)ids" class="link title link-provide-resource-(uu)ids">Provide resource (UU)IDs</a>
-                </li>
-                <li class="menu-item -level-2"><a href="#use-utc-times-formatted-in-iso8601" class="link title link-use-utc-times-formatted-in-iso8601">Use UTC times formatted in ISO8601</a>
-                </li>
-                <li class="menu-item -level-2"><a href="#provide-standard-timestamps" class="link title link-provide-standard-timestamps">Provide standard timestamps</a>
+                <li class="menu-item -level-2"><a href="#respond-structured-and-consistent-errors" class="link title link-respond-structured-and-consistent-errors">Respond structured &amp; consistent errors</a>
                 </li>
                 <li class="menu-item -level-2"><a href="#return-appropriate-status-codes" class="link title link-return-appropriate-status-codes">Return appropriate status codes</a>
                 </li>
+                <li class="menu-item -level-2"><a href="#use-utc-times-formatted-in-iso8601" class="link title link-use-utc-times-formatted-in-iso8601">Use UTC times formatted in ISO8601</a>
+                </li>
+                <li class="menu-item -level-2"><a href="#provide-resource-(uu)ids" class="link title link-provide-resource-(uu)ids">Provide resource (UU)IDs</a>
+                </li>
               </ul>
             </li>
-            <li class="menu-item -level-1 -parent"><a href="#artifacts" class="link title link-artifacts">Artifacts</a>
+            <li class="menu-item -level-1 -parent"><a href="#service-should" class="link title link-service-should">Service should</a>
               <ul class="submenu">
+                <li class="menu-item -level-2"><a href="#separate-concerns" class="link title link-separate-concerns">Separate Concerns</a>
+                </li>
+                <li class="menu-item -level-2"><a href="#use-message-queue-architecture-in-heavy-requests" class="link title link-use-message-queue-architecture-in-heavy-requests">Use Message Queue Architecture In Heavy Requests</a>
+                </li>
+                <li class="menu-item -level-2"><a href="#divide-large-responses-across-requests-with-ranges" class="link title link-divide-large-responses-across-requests-with-ranges">Divide Large Responses Across Requests with Ranges</a>
+                </li>
+                <li class="menu-item -level-2"><a href="#provide-request-ids-for-introspection" class="link title link-provide-request-ids-for-introspection">Provide Request-Ids for Introspection</a>
+                </li>
+                <li class="menu-item -level-2"><a href="#support-http-cache-headers" class="link title link-support-http-cache-headers">Support HTTP cache headers</a>
+                </li>
+                <li class="menu-item -level-2"><a href="#use-json-ld-with-schema.org-vocabulary" class="link title link-use-json-ld-with-schema.org-vocabulary">Use JSON-LD with schema.org vocabulary</a>
+                </li>
+                <li class="menu-item -level-2"><a href="#gzip-and-keep-json-minified-in-all-responses" class="link title link-gzip-and-keep-json-minified-in-all-responses">GZip and keep JSON minified in all responses</a>
+                </li>
+                <li class="menu-item -level-2"><a href="#provide-full-resources-where-available" class="link title link-provide-full-resources-where-available">Provide full resources where available</a>
+                </li>
+                <li class="menu-item -level-2"><a href="#provide-standard-timestamps" class="link title link-provide-standard-timestamps">Provide standard timestamps</a>
+                </li>
                 <li class="menu-item -level-2"><a href="#plan-stability-and-versioning" class="link title link-plan-stability-and-versioning">Plan stability and versioning</a>
                 </li>
-                <li class="menu-item -level-2"><a href="#use-swagger-2.0-to-describe-apis" class="link title link-use-swagger-2.0-to-describe-apis">Use Swagger 2.0 to describe APIs</a>
-                </li>
-                <li class="menu-item -level-2"><a href="#provide-human-readable-documentation" class="link title link-provide-human-readable-documentation">Provide human-readable documentation</a>
+                <li class="menu-item -level-2"><a href="#(todo)-use-_link-for-foreign-key-relations" class="link title link-(todo)-use-_link-for-foreign-key-relations">(TODO) Use `_link` for foreign key relations</a>
                 </li>
               </ul>
             </li>
-            <li class="menu-item -level-1 -parent"><a href="#service-building-tips" class="link title link-service-building-tips">Service building tips</a>
+            <li class="menu-item -level-1 -parent"><a href="#service-building-guidelines" class="link title link-service-building-guidelines">Service building guidelines</a>
               <ul class="submenu">
                 <li class="menu-item -level-2"><a href="#service-has-a-single-responsibility" class="link title link-service-has-a-single-responsibility">Service has a single responsibility</a>
                 </li>
