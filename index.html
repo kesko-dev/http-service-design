@@ -4,8 +4,8 @@
     <meta charset="utf-8">
     <link rel="stylesheet" href="assets/style.css?t=a44c9e9d">
     <link rel="stylesheet" href="assets/docpress.css?t=52d3f23f">
-    <link rel="stylesheet" href="assets/custom.css?t=c1797d90">
-    <script src="assets/search.js?t=da5498c9"></script>
+    <link rel="stylesheet" href="assets/custom.css?t=39201656">
+    <script src="assets/search.js?t=622e4a21"></script>
     <script src="assets/script.js?t=820b7ffa"></script>
     <title>Kesko HTTP Service Design</title>
     <meta name="viewport" content="width=device-width">
@@ -90,7 +90,7 @@ OpenID service publicly provides.</p>
 Service can use this e.g. information to implement fine grained authorization.</p>
 </li>
 </ol>
-<h3 id="require-versioning-headers"><a class="header-anchor" href="#require-versioning-headers" aria-hidden="true">&#xB6;</a> Require Versioning Headers</h3>
+<h3 id="require-versioning-headers"><a class="header-anchor" href="#require-versioning-headers" aria-hidden="true">&#xB6;</a> Require versioning headers</h3>
 <p>Versioning and the transition between versions can be one of the more
 challenging aspects of designing and operating an API. As such, it is best to
 start with some mechanisms in place to mitigate this from the start.</p>
@@ -383,7 +383,7 @@ service, especially auto-incrementing IDs.</p>
 <pre><code>&quot;id&quot;: &quot;01234567-89ab-cdef-0123-456789abcdef&quot;
 </code></pre>
 <h2 id="services-should"><a class="header-anchor" href="#services-should" aria-hidden="true">&#xB6;</a> Services should</h2>
-<h3 id="separate-concerns"><a class="header-anchor" href="#separate-concerns" aria-hidden="true">&#xB6;</a> Separate Concerns</h3>
+<h3 id="separate-concerns"><a class="header-anchor" href="#separate-concerns" aria-hidden="true">&#xB6;</a> Separate concerns</h3>
 <p>Keep things simple while designing by separating the concerns between the
 different parts of the request and response cycle. Keeping simple rules here
 allows for greater focus on larger and harder problems.</p>
@@ -392,7 +392,7 @@ collection. Use the path to indicate identity, the body to transfer the
 contents and headers to communicate metadata. Query params may be used as a
 means to pass header information also in edge cases, but headers are preferred
 as they are more flexible and can convey more diverse information.</p>
-<h3 id="use-message-queue-architecture-in-heavy-requests"><a class="header-anchor" href="#use-message-queue-architecture-in-heavy-requests" aria-hidden="true">&#xB6;</a> Use Message Queue Architecture In Heavy Requests</h3>
+<h3 id="use-message-queue-architecture-in-heavy-requests"><a class="header-anchor" href="#use-message-queue-architecture-in-heavy-requests" aria-hidden="true">&#xB6;</a> Use message queue architecture in heavy requests</h3>
 <p>Separate long running requests to worker processes which live independently
 from request-response lifecycle. For example a video resolution scaling would be
 a perfect use case for worker architecture. Good rule of thumb is that if
@@ -414,13 +414,13 @@ Worker can be disposed at any time and the job is still persisted in the queue.<
 </li>
 </ul>
 <p>Read more: <a href="https://devcenter.heroku.com/articles/background-jobs-queueing">https://devcenter.heroku.com/articles/background-jobs-queueing</a></p>
-<h3 id="divide-large-responses-across-requests-with-ranges"><a class="header-anchor" href="#divide-large-responses-across-requests-with-ranges" aria-hidden="true">&#xB6;</a> Divide Large Responses Across Requests with Ranges</h3>
+<h3 id="provide-pagination-with-ranges"><a class="header-anchor" href="#provide-pagination-with-ranges" aria-hidden="true">&#xB6;</a> Provide pagination with ranges</h3>
 <p>Large responses should be broken across multiple requests using <code>Range</code> headers
 to specify when more data is available and how to retrieve it. See the
 <a href="https://devcenter.heroku.com/articles/platform-api-reference#ranges">Heroku Platform API discussion of Ranges</a>
 for the details of request and response headers, status codes, limits,
 ordering, and iteration.</p>
-<h3 id="provide-request-ids-for-introspection"><a class="header-anchor" href="#provide-request-ids-for-introspection" aria-hidden="true">&#xB6;</a> Provide Request-Ids for Introspection</h3>
+<h3 id="provide-request-ids-for-debugging"><a class="header-anchor" href="#provide-request-ids-for-debugging" aria-hidden="true">&#xB6;</a> Provide request-ids for debugging</h3>
 <p>Include a <code>Request-Id</code> header in each API response, populated with a
 UUID value. By logging these values on the client, server and any backing
 services, it provides a mechanism to trace, diagnose and debug requests.</p>
@@ -562,7 +562,7 @@ or introduce more top-level response fields, e.g.:</p>
 <div class="alert alert-warning" role="alert">
 <p>However prefer linking to the original data instead of inlining data.</p>
 </div>
-<h2 id="service-building-guidelines"><a class="header-anchor" href="#service-building-guidelines" aria-hidden="true">&#xB6;</a> Service building guidelines</h2>
+<h2 id="service-internal-building-guidelines"><a class="header-anchor" href="#service-internal-building-guidelines" aria-hidden="true">&#xB6;</a> Service internal building guidelines</h2>
 <div class="alert alert-info" role="alert">
 <p>The purpose of this guide is to focus on the API design details instead
 of the whole architecture, but going through the underlying architecture principles
@@ -651,7 +651,7 @@ the same external dependencies(Postgres 9.4).</p>
                 </li>
                 <li class="menu-item -level-2"><a href="#support-kesko-openid-authentication" class="link title link-support-kesko-openid-authentication">Support Kesko OpenID authentication</a>
                 </li>
-                <li class="menu-item -level-2"><a href="#require-versioning-headers" class="link title link-require-versioning-headers">Require Versioning Headers</a>
+                <li class="menu-item -level-2"><a href="#require-versioning-headers" class="link title link-require-versioning-headers">Require versioning headers</a>
                 </li>
                 <li class="menu-item -level-2"><a href="#require-https" class="link title link-require-https">Require HTTPS</a>
                 </li>
@@ -679,13 +679,13 @@ the same external dependencies(Postgres 9.4).</p>
             </li>
             <li class="menu-item -level-1 -parent"><a href="#services-should" class="link title link-services-should">Services should</a>
               <ul class="submenu">
-                <li class="menu-item -level-2"><a href="#separate-concerns" class="link title link-separate-concerns">Separate Concerns</a>
+                <li class="menu-item -level-2"><a href="#separate-concerns" class="link title link-separate-concerns">Separate concerns</a>
                 </li>
-                <li class="menu-item -level-2"><a href="#use-message-queue-architecture-in-heavy-requests" class="link title link-use-message-queue-architecture-in-heavy-requests">Use Message Queue Architecture In Heavy Requests</a>
+                <li class="menu-item -level-2"><a href="#use-message-queue-architecture-in-heavy-requests" class="link title link-use-message-queue-architecture-in-heavy-requests">Use message queue architecture in heavy requests</a>
                 </li>
-                <li class="menu-item -level-2"><a href="#divide-large-responses-across-requests-with-ranges" class="link title link-divide-large-responses-across-requests-with-ranges">Divide Large Responses Across Requests with Ranges</a>
+                <li class="menu-item -level-2"><a href="#provide-pagination-with-ranges" class="link title link-provide-pagination-with-ranges">Provide pagination with ranges</a>
                 </li>
-                <li class="menu-item -level-2"><a href="#provide-request-ids-for-introspection" class="link title link-provide-request-ids-for-introspection">Provide Request-Ids for Introspection</a>
+                <li class="menu-item -level-2"><a href="#provide-request-ids-for-debugging" class="link title link-provide-request-ids-for-debugging">Provide request-ids for debugging</a>
                 </li>
                 <li class="menu-item -level-2"><a href="#support-http-cache-headers" class="link title link-support-http-cache-headers">Support HTTP cache headers</a>
                 </li>
@@ -703,7 +703,7 @@ the same external dependencies(Postgres 9.4).</p>
                 </li>
               </ul>
             </li>
-            <li class="menu-item -level-1 -parent"><a href="#service-building-guidelines" class="link title link-service-building-guidelines">Service building guidelines</a>
+            <li class="menu-item -level-1 -parent"><a href="#service-internal-building-guidelines" class="link title link-service-internal-building-guidelines">Service internal building guidelines</a>
               <ul class="submenu">
                 <li class="menu-item -level-2"><a href="#service-has-a-single-responsibility" class="link title link-service-has-a-single-responsibility">Service has a single responsibility</a>
                 </li>

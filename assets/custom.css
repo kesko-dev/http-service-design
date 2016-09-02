@@ -57,6 +57,12 @@
   font-weight: bold;
 }
 
+@media (min-width: 960px) {
+  .doc-layout .menu {
+    width: 280px;
+  }
+}
+
 @media (min-width: 1280px) {
   html .markdown-body .wide {
     width: 900px;
