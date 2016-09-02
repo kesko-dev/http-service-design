@@ -5,7 +5,7 @@
     <link rel="stylesheet" href="assets/style.css?t=a44c9e9d">
     <link rel="stylesheet" href="assets/docpress.css?t=52d3f23f">
     <link rel="stylesheet" href="assets/custom.css?t=62fec3b8">
-    <script src="assets/search.js?t=6de68cd1"></script>
+    <script src="assets/search.js?t=da5498c9"></script>
     <script src="assets/script.js?t=820b7ffa"></script>
     <title>Kesko HTTP Service Design</title>
     <meta name="viewport" content="width=device-width">
@@ -47,12 +47,15 @@ way</em>.</p>
 <li>
 <p>API documentation as <a href="http://swagger.io/">Swagger 2.0 YAML</a></p>
 <p>The latest Swagger YAML should be always uploaded to IBM API Connect.</p>
+<p><strong>TODO:</strong> Add a link and description how to exactly do this.</p>
 </li>
 <li>
 <p>Public API is exposed via IBM API Connect</p>
 </li>
 <li>
 <p>&#x201C;How to get the service running&#x201D; -documentation</p>
+<p>Your service repository should provide or link to this type of documentation in
+<a href="http://README.md">README.md</a> file.</p>
 <p>Preferably the service would use Docker or Vagrant to run local environment.
 This makes it easier to kickstart the development for new developers or
 maintainers joining the project.</p>
@@ -60,8 +63,33 @@ maintainers joining the project.</p>
 </ol>
 <p>See also <a href="#service-building-tips">Service building tips</a> for additional information
 how to build services.</p>
-<h3 id="(todo)-implement-authentication-with-openid-connect"><a class="header-anchor" href="#todo-implement-authentication-with-openid-connect" aria-hidden="true">&#xB6;</a> (TODO) Implement authentication with OpenID Connect</h3>
-<p><a href="https://www.ibm.com/support/knowledgecenter/SSWHYP_4.0.0/com.ibm.apimgmt.apionprem.doc/tutorial_apionprem_security_OAuth.html">https://www.ibm.com/support/knowledgecenter/SSWHYP_4.0.0/com.ibm.apimgmt.apionprem.doc/tutorial_apionprem_security_OAuth.html</a></p>
+<h3 id="support-kesko-openid-authentication"><a class="header-anchor" href="#support-kesko-openid-authentication" aria-hidden="true">&#xB6;</a> Support Kesko OpenID authentication</h3>
+<p><img src="assets/img/kesko-authentication.png" alt="Authentication diagram"></p>
+<ol>
+<li>
+<p>Client executes <a href="https://www.ibm.com/support/knowledgecenter/SSWHYP_4.0.0/com.ibm.apimgmt.apionprem.doc/tutorial_apionprem_security_OAuth.html">OAuth2 Authorization code flow</a> to receive <code>access_token</code>.</p>
+<p>The <code>access_token</code> is an encoded JWT token.</p>
+</li>
+<li>
+<p>Client requests <code>/api/x</code> via API Gateway with correct Authorization: Bearer &lt;access_token&gt; header.</p>
+</li>
+<li>
+<p>API Gateway includes an <code>x-token</code> header in the request and passes it to Service X.</p>
+<p>The <code>x-token</code> is a shared secret between Service X and API Gateway.</p>
+</li>
+<li>
+<p>Service X verifies <code>x-token</code> and Authorization header.</p>
+<p>Authorization header is a JWT token which has been encoded with a
+private key <em>(only OpenID knows this)</em>.
+Service can verify the signature by using a public key which
+OpenID service publicly provides.</p>
+</li>
+<li>
+<p>Service X can now trust that the request came via API Gateway and JWT payload was created by OpenID service.</p>
+<p>JWT Payload contains information about the end user who made the request.
+Service can use this e.g. information to implement fine grained authorization.</p>
+</li>
+</ol>
 <h3 id="require-versioning-headers"><a class="header-anchor" href="#require-versioning-headers" aria-hidden="true">&#xB6;</a> Require Versioning Headers</h3>
 <p>Versioning and the transition between versions can be one of the more
 challenging aspects of designing and operating an API. As such, it is best to
@@ -621,7 +649,7 @@ the same external dependencies(Postgres 9.4).</p>
               <ul class="submenu">
                 <li class="menu-item -level-2"><a href="#provide-certain-mandatory-artifactsactions" class="link title link-provide-certain-mandatory-artifactsactions">Provide certain mandatory artifacts/actions</a>
                 </li>
-                <li class="menu-item -level-2"><a href="#(todo)-implement-authentication-with-openid-connect" class="link title link-(todo)-implement-authentication-with-openid-connect">(TODO) Implement authentication with OpenID Connect</a>
+                <li class="menu-item -level-2"><a href="#support-kesko-openid-authentication" class="link title link-support-kesko-openid-authentication">Support Kesko OpenID authentication</a>
                 </li>
                 <li class="menu-item -level-2"><a href="#require-versioning-headers" class="link title link-require-versioning-headers">Require Versioning Headers</a>
                 </li>
