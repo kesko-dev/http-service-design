@@ -27,7 +27,7 @@ way*.
 
 
 
-## Service must
+## Services must
 
 ### Provide certain mandatory artifacts/actions
 
@@ -76,7 +76,7 @@ for more.
 
 Follow [Zalando versioning guidelines](http://zalando.github.io/restful-api-guidelines/compatibility/Compatibility.html#must-do-not-use-uri-versioning).
 
-### Require Secure Connections
+### Require HTTPS
 
 Require secure connections with TLS to access the API, without exception.
 It’s not worth trying to figure out or explain when it is OK to use TLS
@@ -372,7 +372,7 @@ Render UUIDs in downcased `8-4-4-4-12` format, e.g.:
 
 
 
-## Service should
+## Services should
 
 ### Separate Concerns
 
@@ -672,9 +672,8 @@ environments you should have. At **minimum**, have `qa` and `prod` environments.
 Environment | Purpose
 ------------|---------------------
 `dev`       | Experimental. Sharing new features / fixes to other developers or customer. May break at any time, but should be kept as a working environment.
-`qa`        | Should be as close as `prod` as possible. All deployments **must**
-be tested in this environment before deployment to `prod`.
+`qa`        | Should be as close as `prod` as possible. All deployments **must** be tested in this environment before deployment to `prod`.
 `prod`      | The real deal. Used to serve end users. Response times should ideally be <100ms
 
-All these environments should be as similar to eachother as possible, e.g. have
+All these environments should be as similar to each other as possible, e.g. have
 the same external dependencies(Postgres 9.4).
