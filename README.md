@@ -35,10 +35,16 @@ When a new service is created, these artifacts/actions are required:
 
 1. API documentation as [Swagger 2.0 YAML](http://swagger.io/)
 
-    The latest Swagger YAML should be always uploaded to IBM API Connect.
+    The latest Swagger YAML/JSON definition should be always uploaded to IBM API Connect.
 
-    **TODO:** Add a link and description how to exactly do this.
-
+    For services based on the common Hapi/Hapi-swagger template, the Swagger definition will be
+    available to download from the `/swagger.json` path on the running service. This definition can be used
+    to add the API under an existing product in IBM API Connect. This is best done using the IBM API Connect website
+    to get all the necessary details in place.
+    
+    Once created, the API can also be updated using a command-line based tool
+    available [here](https://github.com/kesko-dev/kesko-node-common/tree/master/apic-tools).
+    
 2. Public API is exposed via IBM API Connect
 
 3. "How to get the service running" -documentation
