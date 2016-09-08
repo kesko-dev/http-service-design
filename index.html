@@ -5,7 +5,7 @@
     <link rel="stylesheet" href="assets/style.css?t=a44c9e9d">
     <link rel="stylesheet" href="assets/docpress.css?t=52d3f23f">
     <link rel="stylesheet" href="assets/custom.css?t=39201656">
-    <script src="assets/search.js?t=764e76ff"></script>
+    <script src="assets/search.js?t=d072f054"></script>
     <script src="assets/script.js?t=820b7ffa"></script>
     <title>Kesko HTTP Service Design</title>
     <meta name="viewport" content="width=device-width">
@@ -46,8 +46,13 @@ way</em>.</p>
 <ol>
 <li>
 <p>API documentation as <a href="http://swagger.io/">Swagger 2.0 YAML</a></p>
-<p>The latest Swagger YAML should be always uploaded to IBM API Connect.</p>
-<p><strong>TODO:</strong> Add a link and description how to exactly do this.</p>
+<p>The latest Swagger YAML/JSON definition should be always uploaded to IBM API Connect.</p>
+<p>For services based on the common Hapi/Hapi-swagger template, the Swagger definition will be
+available to download from the <code>/swagger.json</code> path on the running service. This definition can be used
+to add the API under an existing product in IBM API Connect. This is best done using the IBM API Connect website
+to get all the necessary details in place.</p>
+<p>Once created, the API can also be updated using a command-line based tool
+available <a href="https://github.com/kesko-dev/kesko-node-common/tree/master/apic-tools">here</a>.</p>
 </li>
 <li>
 <p>Public API is exposed via IBM API Connect</p>
