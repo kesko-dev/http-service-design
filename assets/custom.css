@@ -29,6 +29,12 @@
   padding-bottom: 50px;
 }
 
+@media (min-width: 960px) {
+  .-menu-visible .doc-layout .body {
+    padding-left: 300px;
+  }
+}
+
 .header-anchor {
   position: absolute;
   left: -0.8em;
