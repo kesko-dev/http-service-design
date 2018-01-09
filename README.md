@@ -41,12 +41,8 @@ When a new service is created, these artifacts/actions are required:
     available to download from the `/swagger.json` path on the running service. This definition can be used
     to add the API under an existing product in IBM API Connect. 
     
-    To push a new version of your API to IBM API Connect you can use a command-line based tool available 
-    [here](https://github.com/kesko-dev/kesko-node-common/tree/master/apic-tools).
-    
-    Currently, the command-line tool cannot add new APIs in a catalog (only in Drafts). The API can be first
-    published to a catalog using the IBM API Connect web interface, and then later updated using the command-line tool.
-
+    To push a new version of your API to IBM API Connect you can use a command-line based tool available.
+   
 2. Public API is exposed via IBM API Connect
 
 3. "How to get the service running" -documentation
